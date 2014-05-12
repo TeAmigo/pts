@@ -1,0 +1,10 @@
+General notes on creating this.
+
+* FINISHED - <2014-05-09 Fri 13:48>- <2014-05-09 Fri 10:22> - Everything is being moved out of Maven. The maintaining of the Repository, and all the possible glitches, and cruft, make it way too big a pain in the ass. For this size project, with a lone developer, my simple Netbeans setup, with libs right here, is far nicer and easier to maintain. (The last gotcha in Maven was the failure of a new Groovy:shell not working. Since I run everything through Emacs/Groovy, that was too much). 
+
+* ABOUT - <2014-05-08 Thu 18:20> - Resource bundles - ptscharts was using jfreechart, which uses resource bundles for intl. I copied them  to /share/teamigo/jfreechart/src/resources/. There is a thing called petrasys/Bundle that was in ptscharts, but I can't seem to get it put in the right place! :ResourceBundles:
+*** FINISHED - <2014-05-09 Fri 10:07> - This was fixed via Tools/Internationalization/Internationalize... See https://netbeans.org/kb/docs/java/gui-automatic-i18n.html
+***** Step-1 - <2014-05-09 Fri 10:09> - I put the Bundle file here: /share/teamigo/ptscharts/src/petrasys/Bundle.properties. The naming seems to be important, Let the dialog box popped up complete the naming of file.
+***** Step-2 - <2014-05-09 Fri 10:13> - Accept each string selected, or make up your own.
+
+* HOWTO - <2014-05-09 Fri 16:31> - Put jar file results of building a java project into a different directory. In the nbproject/project.properties of a project, change the dist.jar entry. At http://stackoverflow.com/questions/6416445/change-destination-folder-of-jar-files-in-netbeans-7, it is suggested to change the dist.dir entry, but comment in file says that is destroyed when the project is cleaned! Disaster if that's where all your lib files are. I checked and the jar file is updated on new build.
