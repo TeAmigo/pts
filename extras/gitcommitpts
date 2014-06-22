@@ -31,4 +31,5 @@ set -x
 cd $mainDir
 git add .
 git commit -am "$(< gitCommitMsg)"
+git push
 
