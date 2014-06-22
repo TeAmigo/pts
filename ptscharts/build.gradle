@@ -1,0 +1,36 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'groovy'
+apply plugin:'application'
+
+mainClassName = "ptscharts.HourlyCharts"
+
+
+group = 'teamigo'
+version = '1.4-SNAPSHOT'
+
+description = """ptscharts"""
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+run {
+  args '4', '2'  //arg[1] is weeksBack, arg[2] is number of weeks to show.    // 
+}
+
+repositories {
+  mavenLocal()
+  mavenCentral()
+  //     maven { url "http://repo.maven.apache.org/maven2" }
+}
+dependencies {
+  compile group: 'postgresql', name: 'postgresql', version:'8.3-603.jdbc3'
+  compile group: 'teamigo', name: 'ptsutils', version:'1.4-SNAPSHOT'
+  compile group: 'teamigo', name: 'ptstrader', version:'1.2'
+  compile group: 'batik', name: 'batik', version:'1.7'
+  compile group: 'jcalendar', name: 'jcalendar', version:'1.3.3'
+  compile group: 'jcalendar', name: 'looks', version:'2.0.1'
+  compile group: 'ta-lib', name: 'ta-lib', version:'0.4'
+  compile group: 'org.codehaus.groovy', name: 'groovy', version:'2.3.0'
+  testCompile group: 'junit', name: 'junit', version:'3.8.1'
+}

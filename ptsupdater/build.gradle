@@ -1,0 +1,36 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'groovy'
+apply plugin:'application'
+
+mainClassName = "ptsupdater.PtsUpdater"
+
+
+group = 'teamigo'
+version = '1.5-SNAPSHOT'
+
+description = """ptsupdater"""
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+// Extra configuration for run task if needed.
+run {
+  // // Extra options can be set.
+  // systemProperty 'sysProp', 'notUsed'
+  // jvmArgs '-client'
+  // We can pass arguments to the main() method
+  // of gradle.sample.SampleApp.
+  // <2014-06-04 Wed 13:51> Specify a csv file to use when updating the latest expiry.
+  // args '061914.csv'
+}
+repositories {
+  mavenLocal()
+  mavenCentral()
+}
+
+dependencies {
+    compile group: 'postgresql', name: 'postgresql', version:'8.3-603.jdbc3'
+    compile group: 'teamigo', name: 'ptsutils', version:'1.4-SNAPSHOT'
+    testCompile group: 'junit', name: 'junit', version:'3.8.1'
+}

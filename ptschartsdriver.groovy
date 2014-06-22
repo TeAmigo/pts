@@ -7,16 +7,36 @@ syms();
 // gcdd = {IndicatorSet1.run(factory, "GC","2009-03-11T00:00", new DateTime().plusDays(1).toString(), 60 * 24);}
 
 //********************************************************
-//Purge everything loaded so far
-\p all
-// reload the basics needed
-\l /home/rickcharon/.groovy/groovysh.rc
+// <2014-05-12 Mon 17:50> load the basics needed. FIXED by Groovy devs. (not yet in gvm)
+// :l /home/rickcharon/.groovy/groovysh.rc
 //********************************************************
 
-//<2014-04-03 Thu 11:31> ZW, ZC, JPY, AUD, GBP, EUR, CAD, ZB, ZN, CL, ES, GC, ZF, ZS  are current symbols available.
+// <2014-04-03 Thu 11:31> ZW, ZC, JPY, AUD, GBP, EUR, CAD, ZB, ZN, CL, ES, GC, ZF, ZS  (count = 14)
+// are current symbols available.
+
+
 // Hourly charts for jumps and paper trades.
+// <2014-05-21 Wed 10:43> ZB, ZC, ES no papertrades yet.
 // dt is to use a time that I've already scanned up to. 
 gchourly = factory.createPtsChart("GC",new DateTime().minusMonths(1).toString(), new DateTime().toString(), 60);
+clhourly = factory.createPtsChart("CL",new DateTime().minusMonths(1).toString(), new DateTime().toString(), 60);
+
+//<2014-06-20 Fri 17:32> 2weeks up to now.
+jpyhourly = factory.createPtsChart("JPY",new DateTime().minusWeeks(2).toString(), new DateTime().toString(), 60);
+conn = PtsDBops.setuptradesConnection()
+
+
+
+// <2014-06-20 Fri 17:32> 2 weeks starting at date dt.
+dt = new DateTime(2011, 2, 15, 0, 0, 0, 0);
+clhourly = factory.createPtsChart("CL", dt.toString(), dt.plusWeeks(2).toString(), 60);
+clhourly.show();
+
+
+
+dt = new DateTime(2012, 1, 1, 0, 0, 0, 0);
+gchourly = factory.createPtsChart("GC", dt.toString(), dt.plusWeeks(2).toString(), 60);
+gchourly.show();
 
 dt = new DateTime(2012, 4, 10, 0, 0, 0, 0);
 jpyhourly = factory.createPtsChart("JPY", dt.toString(), dt.plusWeeks(2).toString(), 60);
@@ -104,31 +124,88 @@ gcdaily.show();
 // dxdaily.show();
 // Currencies
 
+// <2014-05-21 Wed 10:40> Hourly, no indicators.
 audhourly = factory.createPtsChart("AUD",new DateTime().minusMonths(1).toString(), new DateTime().toString(), 60);
 audhourly.show();
-auddaily = factory.createPtsChart("AUD","2009-03-11T00:00", new DateTime().plusDays(1).toString(), 60 * 24);
-auddaily.show();
-
 cadhourly = factory.createPtsChart("CAD",new DateTime().minusMonths(1).toString(), new DateTime().toString(), 60);
 cadhourly.show();
-caddaily = factory.createPtsChart("CAD","2009-03-11T00:00", new DateTime().plusDays(1).toString(), 60 * 24);
-caddaily.show();
-
 eurhourly = factory.createPtsChart("EUR",new DateTime().minusMonths(1).toString(), new DateTime().toString(), 60);
 eurhourly.show();
-eurdaily = factory.createPtsChart("EUR","2009-03-11T00:00", new DateTime().plusDays(1).toString(), 60 * 24);
-eurdaily.show();
-
-
 gbpdaily = factory.createPtsChart("GBP","2009-03-11T00:00", new DateTime().plusDays(1).toString(), 60 * 24);
 gbpdaily.show();
+
+
+// <2014-05-21 Wed 10:41> Daily, no indicators.
+auddaily = factory.createPtsChart("AUD","2009-03-11T00:00", new DateTime().plusDays(1).toString(), 60 * 24);
+auddaily.show();
+caddaily = factory.createPtsChart("CAD","2009-03-11T00:00", new DateTime().plusDays(1).toString(), 60 * 24);
+caddaily.show();
+eurdaily = factory.createPtsChart("EUR","2009-03-11T00:00", new DateTime().plusDays(1).toString(), 60 * 24);
+eurdaily.show();
 
 
 
 
 groovy.swing.factory.ActionFactory
-
 syms()
+
+// <2014-05-21 Wed 10:42> Daily and Hourly with indicators.
+// australian $
+audhh = {IndicatorSet1.run(factory, "AUD",new DateTime().minusMonths(1).toString(), new DateTime().toString(), 60);}
+auddd = {IndicatorSet1.run(factory, "AUD","2009-03-11T00:00", new DateTime().plusDays(1).toString(), 60 * 24);}
+
+// canadian $
+cadhh = {IndicatorSet1.run(factory, "CAD",new DateTime().minusMonths(1).toString(), new DateTime().toString(), 60);}
+caddd = {IndicatorSet1.run(factory, "CAD","2009-03-11T00:00", new DateTime().plusDays(1).toString(), 60 * 24);}
+
+// Oil
+clhh = {IndicatorSet1.run(factory, "CL",new DateTime().minusMonths(1).toString(), new DateTime().toString(), 60);}
+cldd = {IndicatorSet1.run(factory, "CL","2009-03-11T00:00", new DateTime().plusDays(1).toString(), 60 * 24);}
+
+// SP500
+eshh = {IndicatorSet1.run(factory, "ES",new DateTime().minusMonths(1).toString(), new DateTime().toString(), 60);}
+esdd = {IndicatorSet1.run(factory, "ES","2009-03-11T00:00", new DateTime().plusDays(1).toString(), 60 * 24);}
+
+// Euro
+eurhh = {IndicatorSet1.run(factory, "EUR",new DateTime().minusMonths(1).toString(), new DateTime().toString(), 60);}
+eurdd = {IndicatorSet1.run(factory, "EUR","2009-03-11T00:00", new DateTime().plusDays(1).toString(), 60 * 24);}
+
+// British pound
+gbphh = {IndicatorSet1.run(factory, "GBP",new DateTime().minusMonths(1).toString(), new DateTime().toString(), 60);}
+gbpdd = {IndicatorSet1.run(factory, "GBP","2009-03-11T00:00", new DateTime().plusDays(1).toString(), 60 * 24);}
+
+// Gold
+gchh = {IndicatorSet1.run(factory, "GC",new DateTime().minusMonths(1).toString(), new DateTime().toString(), 60);}
+gcdd = {IndicatorSet1.run(factory, "GC","2009-03-11T00:00", new DateTime().plusDays(1).toString(), 60 * 24);}
+
+// Yen
+jpyhh = {IndicatorSet1.run(factory, "JPY",new DateTime().minusMonths(1).toString(), new DateTime().toString(), 60);}
+jpydd = {IndicatorSet1.run(factory, "JPY","2009-03-11T00:00", new DateTime().plusDays(1).toString(), 60 * 24);}
+
+//30yr
+zbhh = {IndicatorSet1.run(factory, "ZB",new DateTime().minusMonths(1).toString(), new DateTime().toString(), 60);}
+zbdd = {IndicatorSet1.run(factory, "ZB","2009-03-11T00:00", new DateTime().plusDays(1).toString(), 60 * 24);}
+
+//Corn
+zchh = {IndicatorSet1.run(factory, "ZC",new DateTime().minusMonths(1).toString(), new DateTime().toString(), 60);}
+zcdd = {IndicatorSet1.run(factory, "ZC","2009-03-11T00:00", new DateTime().plusDays(1).toString(), 60 * 24);}
+
+//5yr
+zfhh = {IndicatorSet1.run(factory, "ZF",new DateTime().minusMonths(1).toString(), new DateTime().toString(), 60);}
+zfdd = {IndicatorSet1.run(factory, "ZF","2009-03-11T00:00", new DateTime().plusDays(1).toString(), 60 * 24);}
+
+//10yr
+znmm = {IndicatorSet1.run(factory, "DX",new DateTime().minusDays(2).toString(), new DateTime().toString(), 1);}
+znhh = {IndicatorSet1.run(factory, "ZN",new DateTime().minusMonths(1).toString(), new DateTime().toString(), 60);}
+zndd = {IndicatorSet1.run(factory, "ZN","2009-03-11T00:00", new DateTime().plusDays(1).toString(), 60 * 24);}
+
+//Soy
+zshh = {IndicatorSet1.run(factory, "ZS",new DateTime().minusMonths(1).toString(), new DateTime().toString(), 60);}
+zsdd = {IndicatorSet1.run(factory, "ZS","2009-03-11T00:00", new DateTime().plusDays(1).toString(), 60 * 24);}
+
+//Wheat
+zwhh = {IndicatorSet1.run(factory, "ZW",new DateTime().minusMonths(1).toString(), new DateTime().toString(), 60);}
+zwdd = {IndicatorSet1.run(factory, "ZW","2009-03-11T00:00", new DateTime().plusDays(1).toString(), 60 * 24);}
 
 //Currencies
 // Australian dollar

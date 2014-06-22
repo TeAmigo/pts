@@ -1,0 +1,45 @@
+Chart Notes
+
+* CHECK - <2014-05-12 Mon 15:01> - Hardlinked (H in dired-mode) to pts/notes.
+*** UPDATE - <2014-05-20 Tue 10:44> - If the original or link is moved, they are no longer the  same file.
+
+* ENTRY - <2011-03-03 Thu 12:23> - A Chart Reader understands the story the chart is telling
+
+* TODO - <2011-02-09 Wed 10:58> - Become familiar with ta Indicators
+*** tadoc.org is good place to start, lots of links
+*** AD - Acuumulation Distribution Line, See discussion at
+    http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:accumulation_distrib
+    also, /share/documents/TechnicalIndicators/AccumulationDistributionExample.ods downloaded from there
+*** RSI
+*** CCI
+*** ADX
+
+* REFERENCES - <2011-02-09 Wed 10:55>- General reference for indicators, etc
+*** http://www.tadoc.org/ - index of 100+ indicators with links
+*** http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators
+*** /share/notes/notes-talib - if it's not here it may be there
+*** /share/documents/TechnicalIndicators/ is dir for work and downloads
+
+* IN-PROGRESS - <2011-01-25 Tue 13:57> - Doing the work of chart jumping,
+*** <2011-01-25 Tue 13:58> Am seeing some tendencies, but not necessarily "patterns"
+
+
+
+* DONE - <2011-01-05 Wed 13:46> - Figure out what format to use, PNG is it for now, that what screen capture saves
+  CLOSED: [2011-01-25 Tue 13:56]
+*** <2011-01-05 Wed 13:47> SVG is looking very interesting, jFreeCharts exports in SVG, and
+    Inkscape works with it, advantage here is its a text based format, and W3C,
+***** <2011-01-15 Sat 13:31> Problem with JFree export is the title and such are lost,
+*** <2011-01-05 Wed 14:07> See 
+
+
+* TODO - <2011-01-03 Mon 16:00> - Snapshot Patterns and work with them
+*** [[file:/share/ChartPatterns/]] with relevant subdirs
+*** TODO - <2011-02-08 Tue 13:51> - Work with continuation aka breakouts aka congestions
+***** Requiring quite a few bars to qualify, like 2/3 days of 1hr bars
+***** Set stop too narrow, used bottom of continuation pattern, actually only went a little higher before reversing
+      i.e.-, bigger stoploss, would have hit
+***** Hit big with a continuation, see
+      /share/ChartPatterns/Continuation-EUR.USD Forex-60min-01-13-2011-191804-to-01-24-2011-002511.png
+***** Another
+      /share/ChartPatterns/Continuation-GBP.USD Forex-60min-12-29-2010-1550

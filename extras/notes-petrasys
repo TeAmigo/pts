@@ -1,0 +1,971 @@
+PeTraSys Notes
+Notes on my Trading Software
+
+* TODO - <2014-06-20 Fri 17:49> - Be able to redisplay the crosshairs from any trade or paper trade made. :RedisplayCrosshairs:
+*** NOTE - <2014-06-20 Fri 17:50> - There is a difference between the trade requests sent to IB and the trades made. That needs to be examined at some point.
+*** Step-1 - <2014-06-20 Fri 17:51> - Right now the paper trades info is saved in the papertrades table, but sent-trades info is not saved. That info needs to be saved in a table as well.
+***** created button tradesSentToIBButton in /share/pts/ptscharts/src/main/java/ptscharts/PtsTraderFrame.java
+***** created tradesSentToIB table in trading db - same as papertrades table.
+***** TODO - <2014-06-20 Fri 18:22> - have the Execute - trade button in the trading dialog save the info in tradesSentToIB table.
+
+* ABOUT - <2014-06-04 Wed 14:19> - Root directory is now /share/pts. This is using the Gradle build tool and also putting everything in one git repo - pts.
+
+* CHECK - <2014-05-06 Tue 17:35> - Usually after successfully getting a few infos, ptscontractinfos doesn't get a connection when trying to get contract infos. This is probably because a seperate thread is spun for each contract, and they happen too fast. Probably a sleep in /share/JavaDev/teamigo/ptscontractinfos/src/main/java/ptscontractinfos/ContractInfos.java in function requestContractDetails() would do the trick. 
+
+* FINISHED - <2014-05-06 Tue 17:35>- <2014-04-03 Thu 11:25> - I haven't used any of this for quite some time, can't remeber exactly how the jump and paper trade stuff work, but my plan is to use it to get a feel for the different futures, and develop an ability to predict going forward from my familiarity with each symbol. ZW, ZC, JPY, AUD, GBP, EUR, CAD, ZB, ZN, CL, ES, GC, ZF, ZS are current symbols in DB, (see /share/sql/setupFuturesUpdates.sql for getting list). Creating hourly jump charts in /share/JavaDev/teamigo/ptscharts/ptschartsdriver.groovy. - 
+
+* CHECK - <2013-08-04 Sun 18:05> - Update the ptsupdater - currently it checks the  contract info to see if its in the DB and gives a message if its not. Would be better to just update the contract info from there?
+*** UPDATE - <2013-08-05 Mon 16:01> - Currently, ptscontractinfos uses the list /share/JavaDev/teamigo/ptscontractinfos/contracts.csv by default if called in Netbeans. This will update all currently in quotes1min db.
+
+* CHECK - <2013-07-26 Fri 09:23> - The Mouse and Keyboard bindings, see /share/JavaDev/teamigo/ptscharts/src/main/java/ptscharts/keyboardAndMouse.org, need to be updated and documented. The source code is in /share/JavaDev/teamigo/ptscharts/src/main/java/ptscharts/PtsMouseKeyboardController.java
+
+* IN-PROGRESS - <2013-07-21 Sun 13:28> - Using Netbeans 7.3.1, can build and run the maven projects in Netbeans, but then do the git
+
+* CHECK - <2013-07-21 Sun 13:23>all future notes can be in the directory of the app, in the case pf ptscharts, /share/JavaDev/teamigo/ptscharts/ptscharts-notes.org - 
+*** UPDATE - <2012-08-24 Fri 11:57> - These notes are the root of the tree starting at /share/JavaDev/teamigo/
+*** UPDATE - <2013-07-21 Sun 13:19> - There is only 1, for ptscharts.
+
+* ABOUT - <2011-09-02 Fri 18:40> - The process described below, running git and maven,
+There is a lot of jumping around, from the pom file, to the shell and git adds and commits, and to mvn release:prepare and release:perform, and when things get messed up, mvn release:clean, then back to changing the pom.xml, which requires another git add -A and git-commit-all, (combining the cmdline git with the emacs code defined in ~/EmacsLispRPC/git-emacs/git-emacs.el). Between what is written here, and in notes-git and notes-maven, should be a little quicker next time. Of course, this was after 3 months. Probably took 3-5 hrs of work to figure this all out again, repair some wierd stuff like a mystery java file, deal with interruptions of various kinds, etc.
+
+* NOTES - <2011-09-02 Fri 14:14> - Coming back at mvn about 3 months later (going by last date in notes-maven),
+*** Each maven project has a pom.xml file, like /share/JavaDev/teamigo/ptsupdater/pom.xml,
+*** see /share/JavaDev/teamigo/ for projects, aside from pts apps there is jfreechart and twsapi,
+*** There are 2 emacs executables, ptsupdater, and ptscharts, both in /share/elisp/ptsprogs.el, see ptscharts for an example of running the groovy shell in mvn, very nice stuff,
+*** NOTES - <2011-09-02 Fri 17:44> - The pom.xml files need to be checked for versions of dependencies to make sure they are the latest releases (not snapshots), the version of the project should probably be left alone, as it is set by maven during release steps (see below)
+*** HOWTO - <2011-09-02 Fri 16:40> - build ptsutils, ptsupdater, ptstrader, ptscharts
+1. ptsutils - /share/JavaDev/teamigo/ptsutils/ run git-add for all files, then git-commit-all, 
+2. Now  prepare a ptsutils release -  http://maven.apache.org/plugins/maven-release-plugin/examples/prepare-release.html,
+   1. from cmdline: mvn release:clean - best served for cleaning up a failed or abandoned release, or a dry run. not necessary otherwise
+   2. mvn release:prepare - checks everything is up to date, see http://maven.apache.org/plugins/maven-release-plugin/examples/prepare-release.html, for complete list of what it does, may need to read the errors, dependencies may need updating
+   3. mvn release:perform - deploys to local repository ~/.m2, and the github push
+3. ptsupdater - /share/JavaDev/teamigo/ptsupdater/
+   1. git-commit-all (git status showed all were added already)
+   2. mvn release:prepare - ERROR: You don't have a SNAPSHOT project in the reactor projects list.
+      1. correct this by going into pom.xml and set <version> to be a SNAPSHOT version. REQUIRED
+      2. This requires running git add and commit again
+   3. mvn release:perform - all is deployed on github and local maven repository (~/.m2)
+4. Looking at /share/JavaDev/teamigo/ptscharts/pom.xml, ptstrader is a dependency, so it needs to be released next
+   1. /share/JavaDev/teamigo/ptstrader/pom.xml - version of ptsutils needs to be updated to match most recent release (1.2 on <2011-09-02 Fri 17:42>)
+   2. git add -A and git-commit-all
+   3. mvn release:prepare - accept the default args to all questions in general this is good
+   4. mvn release:perform - all went well, in github and local repository (~/.m2)
+5. ptscharts - There is a file, keyboardMenuItems.java, that showed up in the source directory, it is a copy of  PtsMouseKeyboardController.java which has the expected  PtsMouseKeyboardController class, so, moving keyboardMenuItems.java to /share/notes/keyboardMenuItems.java
+6. /share/JavaDev/teamigo/ptscontractinfos/ went without a hitch a
+7. Everything is up to date, no changes in other projects
+
+
+* NOTES - <2011-09-02 Fri 13:43> - TWS was not behaving at all when trying to run ptsupdater, so had to kill all java processes, and start over
+
+* ABOUT - <2011-09-02 Fri 12:07> - I am going to move all of my java code for the pts out of maven, and into netbeans again. The main motivation for using Maven was emacs malabar-mode which proved very broken, so to eliminate a level of confusion, moving it out of maven
+
+* CANCELED - <2011-09-02 Fri 12:09> - Move all the code out of Maven - 
+CLOSED: [2013-07-21 Sun 13:28] Not now. Still in Maven
+
+
+* DONE - <2010-11-21 Sun 16:26>- Get the project ported to Postgresql - 
+CLOSED: [2011-06-18 Sat 13:28]
+  @todo<2010-11-18 Thu 09:02>
+*** moved DBops to [[file:/share/JavaDev/PeTraSys/src/petrasys/utils/DBopsMySql.java][DBopsMySql.java]] and created [[file:/share/JavaDev/PeTraSys/src/petrasys/utils/DBops.java::/*********************************************************************][DBops.java]] that is for PG, also
+    backed DBops for PG into [[file:/share/JavaDev/PeTraSys/src/petrasys/utils/DBopsPostrgesql.java][DBopsPostrgesql.java]]
+*** [[file:/share/JavaDev/PeTraSys/src/petrasys/utils/postgresqlTest.java::/*][postgresqlTest.java]] has tests done to move problematic code to postgresql
+*** DONE - <2010-11-21 Sun 16:24> - Replace [[file:/share/JavaDev/PeTraSys/src/petrasys/utils/DBops.java::public%20static%20String%20createCompressionTable(int%20compressionFactor)%20{][createCompressionTable]] and [[file:/share/JavaDev/PeTraSys/src/petrasys/utils/DBops.java::public%20static%20PreparedStatement%20insertIntoCompressionTable(String%20table)%20{][insertIntoCompressionTable]]
+    CLOSED: [2010-12-20 Mon 10:40]
+    :PROPERTIES:
+    :ID:       5e24a479-cc11-43ba-82fc-3abd1b9bfc89
+    :END:
+    in DBops.java
+***** NOTES - <2010-11-24 Wed 13:43> - related to Create a new PeTraSysCharts app
+
+* DONE - <2010-11-30 Tue 12:31>- <2010-11-24 Wed 13:43> - Create a new PeTraSysCharts app - 
+CLOSED: [2011-06-18 Sat 13:28]
+  :PROPERTIES:
+  :ID:       e7febe4c-a022-4299-9800-36b123e00379
+  :END:
+*** - see [[file:/share/JavaDev/PeTraSys/src/petrasys/PeTraSysCharts.java::*%20File%20path:%20/share/JavaDev/PeTraSys/src/petrasys/PeTraSysCharts.java][PeTraSys Charts Java file]]
+*** DONE - <2010-11-24 Wed 13:47> - Populate the PriceBars from Postgres, via
+    CLOSED: [2010-12-20 Mon 10:42]
+    [[file:/share/JavaDev/PeTraSys/src/petrasys/utils/DBops.java::public%20static%20String%20createCompressionTable(int%20compressionFactor)%20{][createCompressionTable]] and [[file:/share/JavaDev/PeTraSys/src/petrasys/utils/DBops.java::public%20static%20PreparedStatement%20insertIntoCompressionTable(String%20table)%20{][insertIntoCompressionTable]]
+*** TODO - <2010-11-24 Wed 13:49> - Have a selector to redo the chart with different dates,
+    conserving the stop and profit lines if drawn, i.e., just set the data in the chart to
+    new dates, even new interval
+
+      
+
+* CANCELED - <2010-12-05 Sun 12:50>- <2010-12-01 Wed 11:05> - Assess and understand the tools possibly needed (if exit Java) - 
+CLOSED: [2011-06-18 Sat 13:28] For now
+  *** gnuplot
+***** http://www.gnuplot.info/development/ethans_instructions.html download cvs
+***** http://ldn.linuxfoundation.org/article/generating-graphs-with-gnuplot-part-3 using Postgresql
+*** R
+***** file:///usr/share/doc/postgresql-8.4-plr/plr-funcs.html plr, R interface to Postgresql 
+***** http://www.varlena.com/GeneralBits/Tidbits/bernier/art_66/graphingWithR.html graphs using plr
+*** Java - because of the broker interface, but generally not likable
+***** Just had an idea about using NetBeans, since I can fire off the files as well as the whole app
+      that could be a general way of running
+***** As much as I want to continue to use NetBeans, it's constant problems are driving me away <2010-12-01 Wed 18:50>
+*** Ruby
+*** Postgresql
+*** Conkeror
+*** NOTES - <2010-12-06 Mon 15:08> - Looking at the monstrous amount of code in jFreeChart stuff again,
+    and asking myself, do I need this? Truth is, it does a lot!,
+
+    
+
+
+* IN-PROGRESS - <2010-12-20 Mon 16:39>- Create ptscharts java -jar "/share/JavaDev/ptscharts/dist/ptscharts.jar"
+*** NOTES - <2011-06-18 Sat 13:31> - Am moving all future notes to the directory of the app, in the case pf ptscharts, /share/JavaDev/teamigo/ptscharts/ptscharts-notes.org
+
+  <2010-12-11 Sat 12:59>- <2010-12-05 Sun 12:51> - 
+*** Created /share/JavaDev/PeTraSysUtils/dist/PeTraSysUtils.jar
+*** The internals of the Charting stuff, sans IB connections
+*** Scanner class is used for parsing input, see /share/JavaDev/ptscharts/src/ptscharts/datacheck.java
+*** Create a chart, add data to chart, reset the dates of a chart, specify compression, save a chart,
+***** To create a chart need symbol, compression, begindatetime, enddatetime
+*** In ADXChart.java setupChart() the ADX is setup, can I just pull that out? See the issue? If I decide
+    to do indicators, how much of a job it is in jFreeCharts, but how simple it looked in 
+*** <2010-12-20 Mon 16:38> Have a new thing going here, using the commmand line stuff and renaming
+    classes to take care of mistaken changes!,
+*** <2010-12-21 Tue 13:43> See /share/notes/notes-ruby for jRuby uses, so, focusing on Ruby as script and driver,
+***** DONE - <2010-12-24 Fri 18:32> - Have /share/ruby/petrasys/jrubyjava1.rb working example of chart
+      CLOSED: [2011-02-02 Wed 16:40]
+*** Make SymbolInfos a top level class, instantiate and pass to a PtsChart to help create a chart,
+*** <2010-12-21 Tue 16:22> Lots of calls to TraderFrame in /share/JavaDev/ptscharts/src/ptscharts/PtsChartPanel.java
+    that need to be fixed
+   
+
+
+* TODO - <2010-12-22 Wed 15:53>- <2010-12-11 Sat 12:59> - Continue developing PeTraSys charts - -
+*** DONE - <2010-12-30 Thu 17:08> - Fix PaperOrders and PaperTrades, the tables are not right also,
+    CLOSED: [2011-01-03 Mon 12:21]
+    the code isn't right for Playitforward
+***** DONE - <2010-12-31 Fri 14:44> - The types are too fat, eliminating and streamlining see
+      CLOSED: [2011-01-03 Mon 12:21]
+      /share/sql/pgPaperTrades.sql
+*** Here is the flow of control - PeTraSysTopFrame1.setupForActionsOnInstrument() instantiates an
+    Instrument, and calls Instrument.run(), from there a ChartRunner is created,
+    ChartRunner ctor creates ADXChartFrame, which creates an ADXChart
+*** The ChartRunner calls setVisible() on the chartFrame,
+***** Also relevant, ADXChartPanel - control mesgs are routed from here, to MouseKeyboardController and
+      also CrosshairsOpsFrame and CrosshairPetrasys are resident in ADXChartPanel
+      /share/JavaDev/PeTraSys/src/petrasys/charts/ADXChartControlFrame.java
+*** createOHLCDataset() in ADXChart adds the values into the dataset
+*** DONE <2010-12-13 Mon 15:40> Have the PaperTrades and PaperOrders working in Postgres
+    CLOSED: [2010-12-15 Wed 15:04]
+*** DONE - <2011-02-03 Thu 12:29>- <2010-12-13 Mon 15:41> Starting work on DateTimes forward in charts -
+    CLOSED: [2011-02-03 Thu 13:44]
+***** <2011-02-03 Thu 12:29> Going to jump forward an arbitrary amount, which I set with a horiz-line
+
+***** <2010-12-16 Thu 11:49> I'm using Joda-Time library, a replacement for java date, format, etc, and
+      sticking with the ISO8601 format, which corresponds to Postgres well,
+***** <2010-12-16 Thu 13:13> The ADXChartControlFrame is a likely place to put the jump-forward amount, it is
+      instantiated by the ADXChart itself
+***** /share/javalibs/jfreechart-1.0.13-demo/source/demo/MemoryUsageDemo.java is dynamic chart example
+***** <2010-12-16 Thu 17:25> ADXChart priceSeries is what could be updated, this would not change the chart title?
+***** <2010-12-17 Fri 10:07> Going to keep the PriceBars and fill them to end date, then do "jumps" with the
+      Series in ADXChart, that way the indicators can be evaluated just once,
+*** <2010-12-17 Fri 14:09> Since memory usage may be an issue, set -Xms500m, see man java also have memory usage
+    graph, thank you jFreeChart demo!
+*** <2010-12-18 Sat 14:33> The Indicators could be run over the whole set of values before a chart on a subset
+    is setup and run, i.e., move the Indicator setup code out of ChartRunner, The code is actually in a superclass,
+    Runner, already,
+*** <2010-12-18 Sat 17:06> Getting the PriceBars filling and charting seperated, the chart a subset of loaded idea,
+***** -c AUD 2009-12-09 2009-12-10 60 - chart AUD for that time, 60min (1 hr) bars
+***** -d AUD 2009-12-09 2010-6-30 60  - load the data for that time, but don't chart
+*** <2010-12-20 Mon 10:48> I am taking the charting choice (-c) in
+    /share/JavaDev/PeTraSys/src/petrasys/utils/CommandLineHandler.java processLineIn() and creating
+***** <2010-12-20 Mon 10:51> A new chart type that puts data directly from the db into the chart, rather
+      than hitting the PriceBars
+***** <2010-12-20 Mon 10:52> Leaving out my ADX, and integrating the ta-lib indicators
+*** DONE - <2010-12-22 Wed 15:55> -  IMPORTANT For /share/JavaDev/ptscharts/src/ptscharts/PtsTraderFrame.java
+    CLOSED: [2010-12-30 Thu 12:43]
+***** DONE - <2010-12-24 Fri 17:22> -  commented out initComponents and others on line 47-49, needs to be uncommented
+      CLOSED: [2010-12-30 Thu 12:44]
+*** DONE - <2010-12-22 Wed 16:51> - Fix PlayItForward, it uses PriceBars, implement in DB
+    CLOSED: [2010-12-30 Thu 12:43]
+*** DONE - <2011-01-06 Thu 17:27> - Fix Playitforward - should create the new row in papertrades table when called
+    CLOSED: [2011-01-13 Thu 16:31]
+***** DONE - <2010-12-24 Fri 17:20> - Line 301 in PtsTraderFrame.java is the call, commented out right now,
+      CLOSED: [2010-12-30 Thu 12:44]
+      to do complile
+*** NOTES - <2010-12-24 Fri 17:23> - java -jar "/share/JavaDev/ptscharts/dist/ptscharts.jar" to run
+*** CANCELED - <2010-12-27 Mon 12:51> - jRuby working prog is [[file:/share/ruby/petrasys/chart1.rb]]
+CLOSED: [2011-09-07 Wed 14:03]
+*** NOTES - <2011-03-29 Tue 13:00> - To run the Netbean debugger on an emacs jruby process use
+***** jruby -J-Xrunjdwp:transport=dt_socket,address=7000,server=y,suspend=y -S irb putting this in .emacs
+******* ~/EmacsLispRPC/rinari/util/inf-ruby.el is file and .emacs is appending to inf-ruby-implementations
+******* Choose jruby-debug from inf-ruby (run with arg) and in Netbeans, port 7000 in Attach Debugger/Socket
+******* Some helpful links
+********* http://blog.headius.com/2010/07/browsing-memory-with-ruby-and-java.html
+********* http://blogs.sun.com/martink/entry/how_to_debug_from_ruby
+********* http://kenai.com/projects/jruby/pages/JRubyCommandLineParameters
+          
+
+
+
+*** TODO - <2010-12-15 Wed 15:05> - Get the indicators straightened out
+***** <2010-12-18 Sat 14:44> IndicatorResultsAggregator is only used for its Iterator in ADXChart, but
+      the Backtest functionality was begun, see SaveIndicatorResults button in BackTest tab in PeTraSysTopFrame1,
+      and IndicatorResults class,
+***** <2010-12-16 Thu 14:19> To add a dataset to a plot, use XYPlot.setDataset(idx) example is in
+      /share/javalibs/jfreechart-1.0.13-demo/source/demo/HighLowChartDemo2.java
+***** runIndicators in /share/JavaDev/PeTraSys/src/petrasys/runners/Runner.java starts each Indicator in thread
+***** /share/JavaDev/PeTraSys/src/petrasys/indicators/ADXandPlusMinusDi.java is only indicator currently being shown
+***** /share/JavaDev/PeTraSys/src/petrasys/charts/ADXChart.java setupChart() is where the Plots are set up,
+      currently 3, could make this more general to add/remove plots, my thought right now is to keep it at 3,
+      and add indicators to price or volume plots, the ADX plot is the other, getPricePlot(), getVolumePlot(),
+      and getADXPlot() get these three,
+*** DONE <2010-12-13 Mon 15:43> Try out the Postgres function createcompressedtable() rather than using
+    CLOSED: [2010-12-15 Wed 11:22]
+    PriceBars
+*** DONE /share/JavaDev/PeTraSys/src/petrasys/CommandLineHandler.java creates a chart from cmdline parse
+*****  <2010-12-15 Wed 15:21>   -c,AUD,12/09/09,12/10/09,60 is example
+      CLOSED: [2010-12-15 Wed 15:20]
+*** all source is in /share/JavaDev/PeTraSys/src/petrasys/
+
+* TODO - <2011-02-02 Wed 16:40> - Integrate ta-lib indicators -
+*** DONE - <2011-02-22 Tue 17:20> - Make addHorizontalLine work in ChartIndicator - Changed jFreeChart XYPlot in
+    /share/javalibs/jfreechart-1.0.13/source/org/jfree/chart/plot/XYPlot.java
+    CLOSED: [2011-02-24 Thu 12:03]
+*** NOTES - <2011-02-22 Tue 13:21> CODE - /share/JavaDev/ta-lib0.4/src/com/tictactec/ta/lib/Core.java,
+    load in emacs, it makes Netbeans barf
+*** DONE - <2011-02-22 Tue 12:13>- Get multiple plots to work, so that indicators can have their own plot - 
+    CLOSED: [2011-02-24 Thu 12:03]
+    if needed,
+***** DONE - <2011-02-19 Sat 16:06> - Get lines to draw in InidcatorPlots, have plot  appearing, but
+      CLOSED: [2011-02-22 Tue 12:13]
+      no line drawing, need vertical axis to be set
+*** DONE - <2011-02-14 Mon 10:57> - Get Jump to work
+    CLOSED: [2011-02-14 Mon 16:51] Inefficiency of getting arrays repeatedly for each indicator, but
+    seems to be working well,<2011-02-15 Tue 18:04> created IndicatorGroup, now more efficient,
+*** IN-PROGRESS - <2011-02-22 Tue 13:29>- <2011-02-13 Sun 13:41> - The SMA is working for intial data, get other indicators to work - 
+***** See /share/JavaDev/ptscharts/src/ptscharts/indicators/ChartIndicator.java
+*** DONE - <2011-02-12 Sat 17:39> - Up to getting the intial data, now have to chunk it into the correct
+    CLOSED: [2011-02-13 Sun 13:41]
+    Series
+*** Doc is in file:///share/javalibs/ta-lib/docs/com/tictactec/ta/lib/Core.html
+*** DONE - <2011-02-02 Wed 16:41> - Capture the incoming date for close (and others if needed), in simple arrays, or
+    CLOSED: [2011-02-13 Sun 13:41]
+***** <2011-02-05 Sat 15:02> The OHLCSeries uses a OHLCItem, so no way to easily get closes as array
+***** ta-lib requires simple arrays
+***** Best way may be to iterate over the Close (or other) value to create the array
+
+* TODO - <2011-02-08 Tue 15:26> - Add a "add-data" func to ptscharts, to add back data
+  
+* IN-PROGRESS - <2011-02-08 Tue 15:26>- <2011-01-03 Mon 12:22> - Develop a Patterns catalog - See notes-charts - 
+*** [[file:/share/ChartPatterns/]] with relevant subdirs
+    
+
+* TODO - <2011-02-08 Tue 15:27> - Be able to make the chart cover more data, without seeing ALL the data, like
+  it is now with Alt-A, that's good, but need to be able to expand to less than all, mouse wheel does it in a way
+
+* TODO - <2011-02-09 Wed 12:45> - Create my own indicators (PtsCharts) -
+*** Ruby Driver for dev is /share/ruby/petrasys/indicators1.rb
+*** It is good to keep any knowledge of the chart seperate from the Indicators, so that the indicators
+    can be use in non-chart ways, so there needs to be an intermediary betwee chart and indicator
+*** AD is where I'm starting, looking back at PeTraSys and ADX,
+*** ADX - the code in PeTraSys needs to be reworked, but the relevant classes are
+***** /share/JavaDev/PeTraSys/src/petrasys/indicators/support/BasicIndicators.java,
+***** /share/JavaDev/PeTraSys/src/petrasys/indicators/ADXandPlusMinusDi.java
+***** and look at setupChart in /share/JavaDev/PeTraSys/src/petrasys/charts/ADXChart.java
+
+* TODO - <2011-02-16 Wed 13:13> - Practice Trading -
+*** DONE - <2011-02-16 Wed 13:13> - In paper  trading, changing socket port to 7510, leaving it alone in regular account, so ptsupdater can run off of regular account, its socket is 7496, but practice trade in paper acct, 
+
+* TODO - <2011-03-15 Tue 15:00> - Break out the ContractInfoDialog and ContractInfos,
+***** From PeTraSys for fetching the Contract Infos
+
+
+* TODO - <2011-03-21 Mon 12:57> - Get a ptstrader (and a ptsmonitor) app working
+*** Info about OCA orders - https://www.interactivebrokers.com/smf/index.php?topic=36876.msg60242#msg60242
+*** Contract ID and Order ID are obviously different animals, because in a bracket orders, 3 different
+    Order id's are needed for 1 contract, and that contract will have the same id in all of them,
+*** <2011-03-21 Mon 17:01> Need to get the Contract filled in for orders, in ptsupdater, using the
+    symtable to do that, so look at code that fills symtable 
+*** oca_group looks like it needs to be set for stop and profit exits, not parent order,
+*** <2011-03-28 Mon 16:41> http://www.dinosaurtech.com/forums/topic.php?id=105 good example of order entry
+*** TODO - <2011-03-31 Thu 12:27>- Get ptstrader up and running, it interfaces to TWS to send trades
+***** /share/JavaDev/ptstrader/src/ptstrader/PtsTrader.java
+***** NOTES - <2011-04-12 Tue 12:53> - Getting the trades to enter properly is tricky,
+******* timing is critical, and leaving connection open so order can process
+******* /share/JavaDev/IBJava1/src/TestJavaClient/SampleFrame.java has some useful code to filch
+******* <2011-04-12 Tue 15:22> Orders not being entered because
+******* DONE - <2011-04-13 Wed 10:49> - Correct minimum price variation problem
+        CLOSED: [2011-04-14 Thu 12:46] See /share/JavaDev/ptscharts/src/ptscharts/PtsTraderFrame.mintickSetup()
+********* PROBLEM - "The price does not conform to the minimum price variation for this contract"
+********* See code in /share/JavaDev/ptscharts/src/ptscharts/PtsChartFactory.java main()
+********* Need the PtsSymbolInfo in the PtsTraderFrame to do the calculation, bit it isn't preserved in the chart
+*********** It is passed to PtsChartFrame, and PtsChartFrame is available in PtsChart, which is availble to PtsTraderFrame
+************* DONE - <2011-04-13 Wed 11:03>The mintick field is not in the activeFuturesDetails storedProc
+              CLOSED: [2011-04-14 Thu 12:47] put it in storedProc, etc
+*************** required changing activefutures type, activeFuturesDetails in Postgres
+                
+******* NOTES - <2011-03-31 Thu 16:29>Have an example of a Bracket order being entered in
+********* /share/JavaDev/ptstrader/src/ptstrader/PtsTrader.java main()
+
+
+	        Contract con = new Contract ( );
+	        Order ord1 = new Order ( );
+	        Order ord2 = new Order ( );
+	        Order ord3 = new Order ( );
+
+	        con.m_symbol = "GOOG";
+	        con.m_type = "STK";
+	        con.m_exchange = "SMART";
+	        con.m_currency = "USD";
+
+	        ord1.m_action = "BUY";
+	        ord1.m_totalQua ntity = 100;
+	        ord1.m_orderType = "LMT";
+	        ord1.m_lmtPrice = 387.80;
+	        ord1.m_transmit = false;
+
+	        m_client.placeOrder(ORDER_ID, con, ord1);
+
+	        ord2.m_action = "SELL";
+	        ord2.m_totalQuantity = 100;
+	        ord2.m_orderTyp e = "LMT";
+	        ord2.m_lmtPrice = 389.80;
+	        ord2.m_parentId = ORDER_ID;
+	        ord2.m_transmit = false;
+
+	        m_client.placeOrder(ORDER_ID+1, con, ord2);
+
+	        ord3.m_action = "SELL";
+	        ord3.m_totalQua ntity = 100;
+	        ord3.m_orderTyp e = "STP";
+	        ord3.m_auxPrice = 386.80;
+	        ord3.m_parentId = ORDER_ID;
+	        ord3.m_transmit = true;
+
+	        m_client.placeOrder(ORDER_ID+2, con, ord3);
+
+          Please note: In order to transmit the bracket order automatically, the set m_transmit of the last
+	        child order to true.
+
+
+
+* FUTURE - <2010-12-30 Thu 12:45>- <2010-12-15 Wed 15:12> - The command line is parsed, see Petrasys.java -  - 
+  /share/JavaDev/PeTraSys/src/petrasys/PeTraSys.java
+*** -c AUD 2009-12-09 2009-12-10 60  - command line to start a chart
+*** no args, start to top frame
+*** DONE - <2010-12-16 Thu 11:46> - Parse  ISO8061 valid form of date string,
+    CLOSED: [2010-12-16 Thu 12:57]
+*** CANCELED - <2010-12-16 Thu 11:47> - Parse files, update all, update followed by symbol list
+    CLOSED: [2010-12-30 Thu 12:45]
+*** DONE - <2010-12-16 Thu 12:58> - Change to whitespace for command line delimiter
+    CLOSED: [2010-12-17 Fri 11:16]
+      
+
+* FUTURE - <2010-11-30 Tue 12:30>- <2010-11-22 Mon 14:20> - PeTraSys receive notify from Postgres (socket connect ruby) - 
+*** http://wiki.postgresql.org/wiki/PgNotificationHelper is code,
+***** <2010-11-23 Tue 16:02> rpc - Downloaded to [[file:/share/JavaDev/PostgresqlNotify/PgNotificationHelper.java::/%20/share/JavaDev/PostgresqlNotify/PgNotificationHelper.java][file location]]
+*** http://wiki.postgresql.org/wiki/PgNotificationPoller is code,
+*** http://jdbc.postgresql.org/documentation/83/listennotify.html is info
+*** http://www.divillo.com/ very nice demo, in Python
+
+
+
+* DONE - <2010-10-31 Sun 17:58:43> 2010 rpc - I am setting up to do charts by weeks,
+  CLOSED: [2011-05-18 Wed 15:37]
+	and I want to put a week number in every time bar, so, I need to know what the last
+  trade in week is typically, and the first of next week,
+  For CAD Fri 10/15/10 1:59pm last, Sun 10/17/10 3pm first
+          Fri 10.22.10 same,        Sun 10/24 same,
+      EUR same
+      ZN same end, start later, 3:30pm Sun
+  So
+***** CANCELED Create weeks that stop and start on Sat 23:00 (11pm)
+      CLOSED: [2011-05-18 Wed 15:37] Going to do this in java, and want to be able to
+        use emacs, so getting jde going, see [[file:notes-emacs::*todo%20Get%20JDE%20working%20docs%20are%20at%20file%20share2%20jdee%202%204%200%20doc%20html%20jde%20ug%20jde%20ug%20content%20html%20jdee%20docs%20latest%20is%20just%20a%20bug%20fix][Emacs notes]]
+        CLOSED: [2010-11-08 Mon 17:29] JDE isn't really working, for Java need NetBeans
+******* NOTE @note<2010-11-07 Sun 18:10> - Using [[file://share/JavaDev/CalendarExamples/src/calendarexamples/Gregorian.java::File%20path%20share%20JavaDev%20CalendarExamples%20src%20calendarexamples%20Gregorian%20java][Gregorian.java]] for Calendar stuff
+******* CANCELED - Decided to do it in ruby, working in [[file:/share/ruby/saturdaysForSyms.rb::##%20File%20path:%20share/ruby/saturdaysForSyms.rb][Saturday for Symbols ruby]]
+        CLOSED: [2010-11-20 Sat 11:19] - Do it in Postgresql instead,
+        The [[file:/share/ruby/saturdaysForSyms.rb::print_saturdays][print_saturdays]] def is working, and the [[file:/share/ruby/saturdaysForSyms.rb::Mysql][Mysql]] stuff works, more to do
+        @todo<2010-11-09 Tue 18:05>
+******* DONE - Postgresql is way to do these operations see [[file:/share/sql/postgresDateTimes.sql::---%20/share/sql/postgresDateTimes.sql][sql file]] 
+        CLOSED: [2011-03-29 Tue 17:08]
+        @todo<2010-11-17 Wed 15:09>
+        
+***** DONE Put week field in Quotes1min table (int)
+      CLOSED: [2010-10-31 Sun 18:31]
+***** CANCELED Create program to poulate that field
+      CLOSED: [2010-11-21 Sun 18:57] new approach, see 
+***** DONE - <2010-11-21 Sun 18:58> - [[file:/share/JavaDev/PeTraSys/src/petrasys/utils/DBops.java::public%20static%20String%20createCompressionTable(int%20compressionFactor)%20{][createCompressionTable in Java]] and [[file:/share/sql/pgstored1.sql::CREATE%20OR%20REPLACE%20FUNCTION%20createCompressionTable(tableName%20varchar,%20factor%20int)%20RETURNS%20void%20AS%20$$][createCompressionTable in sql]]
+      CLOSED: [2010-12-20 Mon 10:41]
+      See Min and MAx dates by symbol in [[id:5ee4d4e9-9c7e-45c3-b6b9-4e9cc4731034][- <2010-11-21 Sun 16:30> This is via /share/sql/MinMaxDateRowCountBySym.sql]]
+******* Understanding time boundries is necessary, but if I already have Postgresql timestamps,
+        then can just use boudries that are already present, like days, hours, etc, might want to
+        use the actually time when trading starts, which seems to be 3am, and ends about 2pm each day,
+        fo day boundries, or can use midnight, ...
+
+* DONE - <2010-12-13 Mon 17:11> - Update to latest symbols via FuturesContractDetails
+  CLOSED: [2010-12-13 Mon 17:11] 
+*** See /share/sql/pgFutureContractDetails.sql
+
+* DONE - <2011-04-05 Tue 16:09> - Stash the actual minute data on bitbucket
+  CLOSED: [2011-04-06 Wed 15:18]
+*** Created an account TeAmigo 4Te2Store
+*** Uses Mercurial
+*** /share/postgresqlbackup $ hg commit -m "initial commit"
+***** after creating ~/.hgrc with user name in it
+*** /share/postgresqlbackup $ hg push https://bitbucket.org/TeAmigo/tradingdb
+***** to get it out there (this is taking quite a while)
+
+
+* DONE - <2011-04-26 Tue 16:20>- <2011-04-05 Tue 12:41> - Correct Updater errors -
+  CLOSED: [2011-04-27 Wed 09:46]
+*** error() in HistoricalFromTWS, id = 4, errorCode  = 162,
+***** errorMsg: Historical Market Data Service error message:invalid step: 60
+***** DONE - <2011-04-26 Tue 16:36>have a debug that needs to be removed -
+      CLOSED: [2011-04-27 Wed 10:15]
+******* /share/JavaDev/ptsupdater/src/ptsupdater/PtsHistoricalPriceDataDownloader.java line 185
+********* if(sym.contentEquals("EUR")){ runContract();} should be just runContract()
+***** I'm requesting 7 D, must have changed something that broke the 6 D limit
+******* Look at PeTraSys or older version of updater?
+******* /share/JavaDev/ptsupdater/src/ptsupdater/PtsHistoricalPriceDataDownloader.java line 128 is crux
+********* Added test for over 6 days, corrected
+*** CORRECTED: Using Seconds for requests less than 24 hours, using hours doesn't work if less than 1 hour
+
+  
+* DONE - <2011-04-05 Tue 12:42> - Fix IB Gateway startup
+  CLOSED: [2011-04-05 Tue 16:07] Problem was in Firefox(!) used by webstart!, see
+  [[file:notes-firefox::*-%20-%20Figure%20out%20why%20javaws%20isn't%20working][- <2011-03-31 Thu 14:11> - Figure out why javaws isn't working]] /share/notes/notes-firefox
+*** http://www.interactivebrokers.com/java/classes/ibg.jnlp is url
+
+* DONE - <2011-04-14 Thu 14:15>-  Correct endDate so that realtime runs get updated properly -
+  CLOSED: [2011-04-27 Wed 10:15] 
+*** <2011-04-14 Thu 14:16> New problem, I need to delete the last value and reload it for the price
+*** bars, I think... This seems to be working, see code in resetEndDate() in 
+***** /share/JavaDev/ptscharts/src/ptscharts/PtsChart.java
+*** <2011-03-30 Wed 12:26> -
+***** Created resetEndDate() in /share/JavaDev/ptscharts/src/ptscharts/PtsChart.java
+***** Invoke by using C-j, which does a jump after reseting the endDate, 
+
+* DONE - <2011-03-22 Tue 17:19> - Make ptsupdater not fetch 6 days of data when less required - -
+  CLOSED: [2011-03-29 Tue 17:04] Used DateTime - see reqHistoricalData() in
+  /share/JavaDev/ptsupdater/src/ptsupdater/PtsHistoricalPriceDataDownloader.java
+*** <2011-03-24 Thu 18:23> LEFT OFF in PtsHistoricalPriceDataDownloader in main,
+*** <2011-03-24 Thu 10:58> Needed to change call to reqHistoricalData() so can use java Calendars
+***** to detemine space between last bar needed and last bar already fetched.
+      
+*** <2011-03-22 Tue 17:18> Left off in reqHistoricalData()
+***** /share/JavaDev/ptsupdater/src/ptsupdater/PtsHistoricalPriceDataDownloader.java
+***** Search for "if test for time needed then call getDurationStr"
+      
+*** reqHistoricalData() in EClientSocket has a durationStr param that is the issue
+***** called from /share/JavaDev/ptsupdater/src/ptsupdater/PtsHistoricalPriceDataDownloader.java
+******* reqHistoricalData() only available units are S, D, W. M Y and Y can only be 1
+******* S (seconds) max out at 86400, so more than one day has to be days
+        | Time Unit | Seconds | Minutes |
+        | 1 Day (D) |   86400 |    1440 |
+        | 6 D       |  518400 |    8640 |
+
+* DONE - <2011-04-27 Wed 10:21> - ptsupdater - Code to get new expiries into the DB, - ReOpened
+  CLOSED: [2011-04-28 Thu 15:16] Will now do regular style update, on symbols in quotes1min db,
+  as well as file based for past/new future contracts. 
+*** DONE - <2011-04-28 Thu 15:14> - Create a file based interface for gathering past data
+    CLOSED: [2011-04-28 Thu 15:15] See /share/notes/interestratefutures.csv for an example file to feed
+    to ptsupdater.
+*** for same underlying, different expiry. 
+*** Have code that treats all symbols the same that are in quotes1min table, thats a problem for interest rates
+***** Relevant code is bringNewCurrent() in /share/JavaDev/ptsupdater/src/ptsupdater/PtsUpdater.java NOT SUFFICIENT
+******* because of Interest Rate Futures now, others perhaps later
+***** Interest rates need to be treated very differently, for instance, the ZF that expires 20110331,
+***** should be out after 2/27/11, and the 20110630 should be started up then
+******* ContractInfoTable in PtsUpdater is used for pulling in data, it is passed to
+******* PtsHistoricalPriceDataDownloader ctor, thats used to kickoff the download,
+***** The current Updater always updates to the current date, so If I want to chunk in
+***** new symbols with past expiries, going to have to write some more code here
+***** doContinuousContractDownload() in /share/JavaDev/ptsupdater/src/ptsupdater/PtsHistoricalPriceDataDownloader.java
+***** sets the endDate, that's what needs to change
+*** DONE - <2011-04-27 Wed 11:37> - Fix the ContractInfoTable to have an end date.
+    CLOSED: [2011-04-27 Wed 16:09]
+*** DONE - <2011-04-27 Wed 17:28> - Chunk the data from quotes1minpulled into quotes1min and
+    CLOSED: [2011-04-28 Thu 15:14]
+***** setup the table for interestrates, start of table is in /share/notes/test.csv
+
+
+
+*** See top few lines of /share/sql/pgFutureContractDetails.sql for beginning of setup to rollover
+*** /share/JavaDev/PeTraSys/src/petrasys/ContractInfoDialog.java and
+    /share/JavaDev/PeTraSys/src/petrasys/connections/ContractInfos.java
+    are main files involved.
+*** Changed above to act with Postgresql,
+*** created [[file:/share/sql/pgrules1.sql::CREATE%20RULE%20"replace_futuresContractDetails"%20AS][replace_futuresContractDetails]] rule
+*** <2011-03-17 Thu 15:07> Want to set the "maxDate in symlist to the start date of download
+	
+* DONE - <2011-03-10 Thu 12:17>- Put ptscharts and ptsupdater under version control (Also the big daddy) -
+  CLOSED: [2011-03-29 Tue 17:06] Everything on GitHub https://github.com/
+*** <2011-03-11 Fri 16:51> Have ptsupdater and trading db (/share/postgresqlbackup/tradingschema) on github
+*** <2011-03-10 Thu 12:18> Mercurial isn't very intuitive when I want to back track, so going to GIT
+*** <2011-02-03 Thu 13:45> Using Mercurial for ptscharts and ptsupdater
+    which seems very intuitive, it puts the revs in the source dir, so just backing that up backs up everything
+*** <2011-02-03 Thu 13:48> PeTraSys is already under svn, in /share/svn-repos/PeTraSys/
+***** DONE - <2011-03-15 Tue 15:34> - Put it under GitHub
+      CLOSED: [2011-03-17 Thu 11:37]
+******* For the git push, etc, refer to [[file:notes-git::*-%20-%20Put%20PeTraSys%20in%20a%20GIT%20repo%20online,%20along%20with%20others][git-notes]]  /share/notes/notes-git
+******* /share/JavaDev/PeTraSys $ git remote add origin git@github.com:TeAmigo/PeTraSys.git
+******* 
+***** DONE - <2011-03-15 Tue 11:43> - Create svn repo online
+      CLOSED: [2011-03-15 Tue 15:34]
+******* I have created an svn account at https://www.assembla.com/spaces/petrasys/admin user TeAmigo pw 4Te2Save
+********* SVN URL - http://subversion.assembla.com/svn/petrasys/
+*********** Created a dump file - /share/svn-repos$ svnadmin dump PeTraSys > PeTraSys.dump
+*********** Created a test repo - /share/svn-repos$ svnadmin create P2
+*********** Loaded dump into P2 to check - /share/svn-repos$ svnadmin load P2 < PeTraSys.dump
+*********** svnadmin verify P2 to verify dump file
+*********** Created PeTraSys.zip using Nautilus
+*********** upload to https://www.assembla.com/code/petrasys/subversion/repo (took a very long time)
+*********** Doesn't seem to be any way to change back and forth between repos, so going to keep local,
+            and use Git, which seems somewhat more intuitive
+*********** DONE - <2011-03-16 Wed 11:12> - Try double SVN again
+            CLOSED: [2011-03-17 Thu 14:19] Use GIT
+************* Team/Relocate is working thi morning, set "NewURL:" to
+*************** http://subversion.assembla.com/svn/petrasys/
+************* Now setting it back to
+*************** file:///share/svn-repos/PeTraSys
+*************** PROBLEM: revision numbers are now out of sync, so it won't show any diffs, returns an error
+************* Created a dump file of the Assembla repo, see Source/svn, Import/Export at
+              https://www.assembla.com/code/petrasys/subversion/repo
+*************** Following the directions from there, downloaded dump to svn-repos local directory
+*************** rickcharon@ricks-studio:/share/svn-repos$ mv PeTraSys/ PeTraSys-bak
+*************** rickcharon@ricks-studio:/share/svn-repos$ svnadmin create PeTraSys
+*************** Thrashed around, created new PeTraSys project from dump, seems to be ok,
+*************** /share/JavaDev/PeTraSys $ find ./ -name ".svn" | xargs rm -Rf
+***************** getting rid of all subversion in the project
+*************** 
+                
+* DONE - <2011-01-13 Thu 16:32> - Create an independent Updater - see /share/JavaDev/ptsupdater/src/ptsupdater
+  CLOSED: [2011-02-05 Sat 15:00]
+*** DONE - <2011-01-13 Thu 16:34> - Create a replacement for ContractInfoTable in
+    CLOSED: [2011-02-02 Wed 16:39]
+    /share/JavaDev/ptsupdater/src/ptsupdater/PtsHistoricalPriceDataDownloader.java
+*** TODO - <2011-01-18 Tue 12:56> - reqCurrentTime() isn't returning correct time,
+    1295384155 1295384246
+
+
+* DONE - <2010-11-30 Tue 12:31> - Assess using gnuplot rather than java for charting
+  CLOSED: [2011-01-01 Sat 15:21]
+*** See /share/notes/notes-gnuplot
+
+
+
+
+* NOTES - <2011-04-26 Tue 17:03> - IBJava1 was built as a webstart (playing around) but needed as regular prog
+*** Netbeans has so much crap, in this case you need to
+***** See http://stackoverflow.com/questions/2848642/how-to-setup-main-class-in-manifest-file-in-jar-produced-by-netbeans-project
+******* only good explantation found, and it worked
+***** Create manifest.mf in main project directory, (just filched it from another project, not much in it)
+***** add manifest.file=manifest.mf in /nbproject/project.properties
+
+* NOTES - <2011-04-28 Thu 12:51> - ptscontractinfos is project to get contract infos (2 file project)
+*** /share/JavaDev/ptscontractinfos/src/ptscontractinfos/ContractInfos.java
+*** /share/JavaDev/ptscontractinfos/src/ptscontractinfos/ContractInfoDialog.java
+*** Currently is a one at a time dialog, need to upgrade to take numerous contract input from a file
+***** Only requires symbol and exchange
+
+* NOTES - <2011-03-22 Tue 14:41> - There are 2 ways to call ptsupdater with 0 args or 1 arg -
+***** 0 args, the usual behaviour, updates the most current expiries in DB
+***** 1 arg, <file> containing data to setup the ContractInfos table,
+******* See /share/notes/interestratefutures.csv for an example file
+* NOTES - <2011-02-14 Mon 10:59> - jumpDateSet in /share/JavaDev/ptscharts/src/ptscharts/PtsChart.java is
+  to implement the jump to date forward, i.e., picturing the future price moves, see the setup keys[KeyEvent.VK_V]
+  in /share/JavaDev/ptscharts/src/ptscharts/PtsMouseKeyboardController.java
+	
+
+* NOTES - <2011-01-20 Thu 15:18> - New Elisp programs - ptsupdater and ptscharts, see
+  /share/elisp/ptsprogs.el
+
+PtsCharts ->     java -jar /share/JavaDev/ptscharts/dist/ptscharts.jar
+PtsUpdater ->    java -jar /share/JavaDev/ptsupdater/dist/ptsupdater.jar
+
+* NOTES - <2011-01-18 Tue 17:37> - To start in debug mode:
+java -Xdebug -Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=n -jar /share/JavaDev/ptscharts/dist/ptscharts.jar
+
+to run updater   java -jar /share/JavaDev/PeTraSys/dist/PeTraSys.jar -u
+
+
+
+
+
+
+
+* NOTES - <2010-11-27 Sat 12:15> - Creating a petrasys.org file in [[file:/share/JavaDev/PeTraSys/petrasys.org]]
+  to keep track of code related info
+
+* REFERENCES - <2010-12-02 Thu 18:43> - https://github.com/TeAmigo/PeTraSysCharts is set up
+
+* NOTE - While porting the app to Postgresql, noticed that the stored proc that is
+  populating contracts currently in DB is using the futurescontractdetails list, which
+  is wrong, should use the quotes1min list, or there are possibly no rows in quotes table!,
+  see [[file:/share/JavaDev/PeTraSys/src/petrasys/PeTraSysTopFrame1.java::public%20void%20getDistinctSymbolNames()%20{][populating function ]] in PeTraSysTopFrame1.java, and [[file:/share/JavaDev/PeTraSys/src/petrasys/utils/DBops.java::public%20static%20CallableStatement%20distinctSymsProc()%20{][distinctSymsProc()]] in the DBops.java file
+  @note<2010-11-16 Tue 17:00>
+
+* Thu Oct 28 13:23:28 2010 rpc - Looking again at the 6 methods needed to follow my plan
+	for a trading system, 
+  - For analysis, break price bar history into weeks, then run patterns on those, the code for
+    PeTraSys lives in [[/share/JavaDev/PeTraSys/src/petrasys]]
+
+* Mon Oct 11 10:56:12 2010 rpc - So, from Tandra Meditation,
+  AUD is up, CAD is down, looking at the chart AUD has shot up tremendously, since August,
+  10k, but the oscillations, i.e., the fluctiuations in price, the volatility, has been tremendous,
+  not clear on how I should play this, creepy how much money could have been lost trying to catch this
+  ride up, if the stop was at 1500, to avoid any loss, would have needed a stop way greater than that,
+  
+
+* Fri Oct  8 11:17:51 2010 rpc - I am not sure what the best method is,
+  I think I need to be present, presence is important, during the whole trade, so
+  not setting a target, but jsut cautionary stops,
+
+* Tue Oct  5 11:28:48 2010 rpc - Continuing the algo def,
+  
+
+* Mon Oct  4 12:13:14 2010 rpc - The Six (6) critical aspects for the PeTraSys Trading Algo,
+  1 - High Price
+  2 - Low Price
+  3 - MidPoint Price
+  4 - The length of the 1/2 circumfrence of the half-circle, with the mid point as the fulcrum,
+      and and the high and low as points on the circle,
+  5 - The radius of the circle in 4, i.e., the distance between the midpoint and the high or low
+  6 - The area of the 1/2 circle 
+
+  
+
+* Fri Oct  1 03:43:58 2010 rpc - Branching out into Ruby for TA stuff,
+  can create tables with results of TA, and use those tables to set up trading strategies?
+
+* Fri Sep 24 08:18:52 2010 rpc - Lots more needed if I'm going to pursue the trading idea,
+  embodied in the current design, but is that what I want? Where do I go from here?, Awaiting
+  Inner Guidance,
+
+* Wed Sep 22 11:18:39 2010 rpc - Today's goals -
+  - get the stop/profit lines drawn on chart, DONE
+  - get the play it forward trades in the db, DONE
+
+
+* Wed Sep 15 06:17:36 2010 rpc - So, this whole idea of using the form files in NetBeans
+  for layout, then getting rid of them, seems like a good idea,
+  
+* Tue Sep 14 10:57:47 2010 rpc - So, when I gutted the Persistence stuff,
+  I ended up with a problem in ContinuousContractDlg, namely, the table doesn't work,
+  going to fix it ala TraderFrame, orderTable1Row, so that I have control over the table,
+  see Contract.java here, for now, just corrected the Persistence Unit, and still using as is,
+
+  Got the db updated,
+
+  Removed the form file from /share/JavaDev/PeTraSys/src/petrasys/trader/TraderFrame.java, it
+  was good for design layout, but definitely got in the way after that, insisting on calling
+  setModel on the JTables,
+
+* Thu Sep  9 12:33:07 2010 rpc - Have a file called UiUtil.java here in the
+  /share/notes directory, that has Ui code that may be useful for setting up screen, etc, 
+
+* Wed Sep  1 13:03:06 2010 rpc - The MouseKeyboardController is all the stuff for
+  keyboard and mouse that used to be in the ADXChartPanel.java, putting a box to set the
+  stop and profit amts for trades, Alt-M invokes the menu from a chart
+  
+
+* Mon Aug 30 07:10:15 2010 rpc - Exploring the idea of using the mouse wheel to set
+  the stop/profit limit lines, looking at /share/JavaDev/visual.examples/, the test.action.WheelPanActionTest
+  may be useful, a grep for "wheel" in /share/JavaDev/visual.examples/src/test/ revealed numerous hits,
+
+  See /share/notes/ordr1.java for work involving the Order class, and the OrderTable1Row class,
+  snippets manipulated there, To get the Order Columns with their default info, etc, use
+  PhpMyAdmin, structure, then Print View, then copy into OpenOfficeCalc, then save as csv, 
+
+* Wed Aug 25 11:23:21 2010 rpc - While going through all sorts of reams of ideas,
+* Thu Sep 23 11:20:15 2010 rpc - Actually renamed below to Order.java
+  to find a relatively simple way to map a table to a class, without breaking my existant patterns,
+  I found this, In Netbeans, Create New File/Category Persistence, file type Entity Classes from Database,
+  click through and make your choices, after the class is created, get rid of the Persistence fluff I
+  don't need, should have a good mapping for the class, did this with PaperOrder (see above, renamed to
+  Order.java), actually started out as
+  PaperOrders plural, pulled it into emacs, and deleted all the unneeded, back in Netbeans, got rid of all
+  the unneeded imports, simply have columns and getters/setters, easy way to get simple mapping,
+
+
+* Mon Aug 23 10:39:26 2010 rpc - I realized that what I need is a
+  Order object, that handles setting itself up, displaying itself in a table, etc.
+  and of course the corresponding db table,
+
+* Sun Aug 15 09:24:18 2010 rpc - For my paper trading system, I can just use submitted,
+  cancelled, and filled in the status field, will need more in real trading,
+	
+
+
+* Sat Aug 14 12:57:46 2010 rpc - If an order has been filled, i.e., executed in full,
+  then it should have a Filled Status, but, if more than 1 contract is involved, there are other
+  relevant fields in the return from EWrapper.orderStatus(), namely filled, remaining, avgFillPrice,
+  After filling in all the fields, see below "PaperOrders columns", seems that Trades and Positions
+  are just special views of that table, but, the idea of positions is tricky, something for Open/Closed?,
+  Using the Status can give me what I want, Submitted, and Filled, Submitted is a, "working order",
+  and Filled is obvious, Partial orders would need a look at AvgFillPrice and 
+  
+  
+
+* Fri Aug 13 13:15:09 2010 rpc - So, the functions and fields of the 3 trading tables,
+  Lots of twists and turns to this order stuff, like modified orders, time it was filled vs entered,
+  
+
+  Using the Order and OrderState of TWS-API to figure out what goes here; (modified orders?)
+  orders - all orders placed, pending, executed, canceled, modified?
+	PaperOrders columns
+    UL
+    Expiry
+    BuySell
+    TotalQuantity         - the ordered quantity
+    FilledQuantity        - filled quantity (TotalQuantity - Remaining)
+    RemainingQuantity     - remaining quantity (TotalQuantity - Filled)
+    LimitPrice            - for limit, stop-limit and relative orders. In all other cases specify zero.
+                            For relative orders with no limit price, also specify zero.
+    Auxprice              - the STOP price for stop-limit orders, and the offset amount for relative orders.
+                            In all other cases, specify zero.
+    AvgFillPrice
+    OrderType             - Valid values are: MKT, MKTCLS, LMT, LMTCLS, PEGMKT, SCALE, STP, STPLMT,
+                            TRAIL, REL, VWAP, and TRAILLIMIT	
+    TIF
+    TranslatedPrice       - for futures, the actual future value
+    BarTime               - bar time for trade
+    LossOrGain
+    OCAGroup
+    OcaType               - values are
+                            1 = Cancel all remaining orders with block,
+                            2 = Remaining orders are proportionately reduced in size with block
+                            3 = Remaining orders are proportionately reduced in size with no block
+                            If you use a value "with block" gives your order has overfill protection.
+                            This means that only one order in the group will be routed at a time to
+                            remove the possibility of an overfill. (most always 2 is desired)
+    OrderID
+    ParentID             - for attached orders, like brackets, stops, etc.
+    PermID               - IB gives this
+    EntryDateTime
+    ExecutedDateTime
+    Status               - (See EWrapper.orderStatus() - where values came from,
+                           set('PendingSubmit','PendingCancel','PreSubmitted','Submitted',
+                               'Cancelled','Filled','Inactive')
+                     
+* Wed Aug 11 11:22:23 2010 rpc - I need to break out Trades into -
+  positions, orders, and completed trades, 
+
+* Mon Aug  9 11:28:44 2010 rpc - Breaking out controller classes -
+  for mouse and keyboard now, from ADXChartPanel, see MouseKeyboardController
+
+* Fri Aug  6 15:32:45 2010 rpc - Having trouble with key-mouse bindings,
+  field gets crowded, and get overlaps, need to step back and determine better strategy
+  for this,
+
+* Mon Jul 26 14:44:13 2010 rpc - Left off at
+  linesToChartButtonActionPerformed(), need to do stuff with vertical lines and finish this func,
+  also add an executed field to db table for trades,
+
+* Sun Jul 25 11:11:33 2010 rpc - Imagining all sorts of ways to jazz up the Crosshairs,
+  include date of creation, what sort of Crosshair it is, (Buy, Sell, Stop-sell, Resistance, etc.),
+  
+
+* Sat Jul 24 16:06:02 2010 rpc - Lots of progress on the CrosshairsOps,
+  getting close!,
+
+* Thu Jul 22 15:31:55 2010 rpc - As I get closer to actually having an order entry capability,
+  See TraderFrame.java, need to consider modifying an order, this from
+  http://individuals.interactivebrokers.com/php/apiUsersGuide/apiguide.htm
+      To modify an order using the API, resubmit the order you want to modify using the same order id,
+      but with the price or quantity modified as required. Only certain fields such as price or quantity
+      can be altered using this method. If you want to change the order type or action, you will have to
+      cancel the order and submit a new order.
+
+  Need to get MarketDataConnection() into TraderFrame somewhere?,
+
+
+* Tue Jul 20 06:43:21 2010 rpc - Created the TraderFrame.instigateBuyTrade() method,
+  currently called from ADXChartPanel.chartMouseClicked() event, this last method contains
+  so many key sensitive bindings, going to make a help screen visible some how,
+
+* Mon Jul 19 06:36:46 2010 rpc - Moving on with the Crosshair redraw,
+  The XYPlot that the Horizontal Crosshair applies to needs to be available for the
+  redraw, and currently isn't, The vertical crosshair overlays work great, but the horizontal are
+  the problem, maybe use a regular Crosshair v.s. CrosshairOverlay?, problem is, only 1 per chart!,
+  FINALLY, seem to have it drawing right, had to put a new variable, see Rectangle2D dataAreaH,
+  in file CrosshairOverlayADX.java, being passed to paintEachPanel(), this seems to do it!,
+  
+
+* Sat Jul 17 16:50:22 2010 rpc - Repaint of Crosshairs in JFreeChart is messed up,
+  probably need to rewrite it, I need to use valueToJava2D in an inverse sense to which
+  double subChartY = rangeAxis.java2DToValue(mousePoint.getY(), info.getSubplotInfo(subPlotIdx).getDataArea(),
+            rangeAxisEdge);
+  is used in ADXChartPanel, I need to probably do this in CrossHairOverlayADX.drawHorizontalCrosshair(), 
+
+* Fri Jul 16 18:27:04 2010 rpc - This isn't the most general place for it,
+  but setting up the TraderFrame, the huge complexity of the JTable becomes painfully apparent,
+  see /share2/JavaTuturials/uiswing/examples/components/TableFTFEditDemoProject/src/components/IntegerEditor.java
+  for creating a customized editor, and of course the code in TraderFrame, where the results of massive
+  amounts of JTable research are used,
+
+  AFTER MUCH REDICULOUS stuff, have 3 comboboxes in the TraderFrame,
+  the way it is done, select the table in the Inspector, select Table Contents, click on the relevant column,
+  enter custom code for the Cell Editor, such as new DefaultCellEditor(parentBuySellCombo),
+  this is about it, other than defining the ComboBox thus:
+  String[] parentBuySellString = {"BUY", "SELL"};
+  JComboBox parentBuySellCombo = new JComboBox(parentBuySellString);
+
+* Wed Jul 14 09:06:32 2010 rpc - From IB support re Bracket orders:
+
+  In order to create a bracket order from an API program you must have an order id of the primary
+	order assign as the parent order of the subsequent orders. Also to ensure that the primary
+	order and all of its subsequent orders do not accidentally fill while the bracket order is being
+	created the transmit field should be set to false. Below is a skeleton code on Java. However, it
+	should provide same idea in terms of managing order id and parent ids.
+
+* Mon Jul 12 06:39:02 2010 rpc - UpdateAll is working nicely now
+  There are 2 files currently in /share/PeTraSys/, they control the Updaters situation, killing it if
+  it goes into the void, and determining if it should be continuous, modifying these at runtime
+  give control over the program, now make the charts update easily, and you have a pretty nice beginning
+  to a great trading environment!, The UpdateAll program is well developed, it automatically updates
+  all active symbols, and can be stopped and started easily, given the constant breakage of TWS,
+  thats a really great quality, the Trader needs to be robust in a similar way, and MY CHARTS ARE
+  BEAUTIFUL!,
+  now, on to the trading and portfolio tracking windows,
+
+* Sun Jul 11 18:10:38 2010 rpc - Here are the rows needed in the trading window,
+  1 row that is current market data,
+  1 row for the buy/sell order
+  1 row for stop order
+  1 row for profit order
+
+  The columns for current market data are bid ask and sizes and last,
+  for main order orderId, buy/sell,   quantity, price, order type (LMT,etc), TimeInForce (GTC, DAY),
+                  orderPriceTranslated, 
+  of stop order buy/sell (auto, not settable by mistake, linked to main order buy/sell), order type,
+                TimeIn Force, price, priceTranslated, 
+  same for profit order,
+  Want to be able to enter these in translated price mode, and see the actual price it corresponds to,
+
+* Sat Jul 10 14:24:59 2010 rpc - Devising a trading window is very appealing,
+  and there is much that it would need to keep track of - open postions, working orders,
+  at least, and the current price of a potential buy/sell, as well as order entry, and
+  cancelation, maybe a tabbed display,
+  TOS has the coolest interface, so going to work with that for a while, to decide what
+  i want in mine,
+
+* Fri Jul  9 06:20:03 2010 rpc - I am going to rely on processes more, and
+  text files that they read/write to control
+  Because of using seperate little programs, using the IBConnectionManager class doesn't
+  work the way it is implemented, either have to use a file or db, to keep track of Client IDs,
+  I'm going to hard code the connection ids in the apps, If there ends up being a problem,
+  well, deal with it then,
+  PeTraSysUpdateAll - clientID = 52 set in IBConnectionManager as static int ClientID,
+  
+
+* Thu Jul  8 17:57:53 2010 rpc - As soon as I started to use the TWS to trade,
+  big problems, lock ups, etc. So, if I'm going to trade at IB, need to use the
+  IB Gateway, and design my own trader, also, need to kill threads when IB isn't answering
+  historical requests, need a methodology for ding that, 
+
+* Wed Jul  7 12:34:35 2010 rpc - Pretty much all the work I've done lately has been in
+  ADXChartPanel class, chartMouseClicked, and repaint methods, 
+
+* Wed Jun 16 13:46:35 2010 rpc - Am making UpdateAll be able to do it once, or repeat indefinitely,
+  by setting a string in a file to true or false, will use /share/PeTraSysRepeatFile/repeat.txt
+
+* Mon Jun 14 11:36:39 2010 rpc - The label for crosshairs
+  should be set to the subplot position, but the crosshair needs to be set to
+  the combinedplot position, /share/JavaDev/PeTraSys/src/petrasys/chart/utils/
+
+* Sun Jun 13 14:42:13 2010 rpc - Now have all crosshairs being drawn,
+  by commentingout the "else" in ADXChartPanel.setupCrosshairs().
+
+* Sat Jun  5 11:26:03 2010 rpc - When I try to run PeTraSys from a command line,
+  get an error in Classes::getClassesForPackage(), which was downloaded from
+  http://forums.sun.com/thread.jspa?threadID=341935&start=15
+  Loaded the last def of that func from site and it works ok, had to do with loading classes
+  out of jars,
+  
+
+* Sun May 23 18:23:54 2010 rpc - The problem with my CrossHairOverlay Horizontal
+  line being drawn is in CrosshairOverayADX.paintOverlay(), I hardcoded the subplot info in
+  there!, (plotInfo.getSubplotInfo(1).getDataArea()), see where I commented out the second call,
+  to draw the crosshairs there, and get really wierd behavior, dotted lines and solid lines,
+  and they don't go away!, very strange,....
+
+* Mon May 17 12:58:41 2010 rpc - I have an independent UpDateAll
+  program in /share/JavaDev/PeTraSysDownloader/dist/PeTraSysUpdateAll.jar
+
+* Sat May 15 14:39:51 2010 rpc - I have quite a few facilites of the chart mapped out,
+  lots of key bindings and mouse event captures, but need to make facilities available to
+  the ChartPanel that reside in the Plots, to resize, setup bar sizes, etc.
+
+* Fri May 14 10:17:55 2010 rpc - There are, so far, 2 basic aspects to the PeTraSys,
+  the downloads into the DB, and the charting, I could seperate these into 2 components,
+  have PeTraSysCharts, and PeTraSysDownloads - I already have PeTraSysUpdateAll
+
+* Mon May 10 09:56:37 2010 rpc - see notes-trading
+  make tools that can be spun and moved on a chart, like the triangle mentioned above,
+
+  Might break out the data download and the charts into 2 seperate programs,
+
+* Thu May  6 15:46:46 2010 rpc - Refactoring the charts,
+  Some nice stuff now built in, but need volume, and other indicators,
+  See chartMouseClicked() in ADXChartPanel for some nice resizing and crosshair code,
+
+* Thu Apr 29 14:15:06 2010 rpc - Added a CrosshairOverlayADX to the project,
+  This draws nice, need to do more work with it, also, check how mouse code works,
+
+* Fri Apr  9 18:39:21 2010 rpc - Still working on the data set
+  need to reset range need highest lowest prices, DynamicTimeSeriesCollection might be of
+  interest,
+
+* Thu Apr  8 06:56:18 2010 rpc - Everything is working again, the main classes
+  wouldn't appear in the Run Configuration, not sure why that is, reinstalled Netbeans 6.8,
+  still the same, closed the project, ran a couple of others, reloaded the project and it worked,
+ 
+
+* Mon Apr  5 14:41:14 2010 rpc - Very wierd behavior, PeTraSysTopFrame1 would not load, start
+  I had commented out ctor with no args in PriceBars, I put it back in and everything worked again,
+  commented it out, and things still work??, why?
+
+* Wed Mar 31 11:00:58 2010 rpc - Getting the thread control for the Continuous Contract
+  download is still not correct, need to create new download objects,
+  IMPORTANT: I'm refactoring the historical download of continuous contracts and may break code
+  so the last backup is important!,
+  
+
+* Mon Mar 29 10:05:56 2010 rpc - Not sure what I did, but the ContinuousContractDlg
+  is behaving funny, am going to reintroduce the join() and also, get rid of the wait
+  dlg, and call ContinuousContractDlg from PeTraSysTopFrame1 modally, 
+
+* Wed Mar 24 12:36:43 2010 rpc - I found Welles Wilder's book, the original ADX defs,
+  and I'm using that to define the ADX, just as he writes it, also just bought his book to make it right,
+  I have the ADX 3 lines working, in ADXandPlusMinusDi, and put old run code in
+  /share/notes/adx-old.java just in case!,
+
+* Sat Mar 20 14:54:50 2010 rpc - Testing ADXandPlusMinusDI
+  746 pricebars from db, using 60 periods, 686 bars minusDI and plusDI, but only 627 for ADX,
+  only 508 rows written to DB?, 2010-03-16 01:59:00 is earliest, 2010-03-16 10:26:00 is max
+  03/16/2010 00:00:00, to 03/16/2010 12:25:00 is what is selected in app window
+
+  ADX abouve 25 is a trending mkt accord to
+  http://www2.wealth-lab.com/WL5WIKI/Default.aspx?Page=ADX&AspxAutoDetectCookieSupport=1
+
+* Thu Mar 18 10:43:54 2010 rpc - A fitness evaluator, that measures various criteria,
+  like time in trade, drawdown, % of trades that are good, etc, for the composite indicators
+  that lead to trades,
+  Charting is up, 
+
+* Wed Mar 17 16:05:54 2010 rpc - I am using ConcurrentSkipListMap for the Indicator results,
+  because it imposes an ordering on the elements, so I know where to expect them,
+
+* Tue Mar 16 12:23:03 2010 rpc - A very wierd behavior, the Wait dlg, DownloadingWaitDlg,
+  doesn't draw properly when I call Thread join in the ContinuousContractDlg, but I do want it to
+  wait for each download to finish before launching a new one,
+  Am going to use PeTraSys as a documenter and helper for trading, because intuitive trading is the
+  protocol most appealing, 
+
+* Mon Mar 15 14:38:21 2010 rpc - I am going to put the IndicatorValues collection
+  within the individual Indicators, a little concerned about keeping the datetimes synchronized,
+  
+
+* Thu Mar 11 19:14:52 2010 rpc - Coming here from /share/notes/notes-jsystemtrader,
+  Left off trying to get ContractInfos to work, probably need another thread for incoming msg,
+  This is done, with IB, the spawned thread has to be receiving the message, the main thread of the
+  window doesn't work.

@@ -1,0 +1,26 @@
+General notes on creating this.
+
+* HOWTO - <2014-06-21 Sat 18:35> - Push everything to the git repo using "$ gitcommitpts". :git:
+*** TODO - <2014-06-21 Sat 18:38> - Get the .gitignore setup properly. To get rid of files that have previously been committed, but aren't wanted, follow this
+1. git rm -r --cached .
+2. git add . (after .gitignore is set up)
+3. git commit -am "gitignore update"
+***** from http://stackoverflow.com/questions/3919812/gitignore-and-how-to-ignore-a-common-directory-name-and-its-contents
+
+
+* CHECK - <2014-06-21 Sat 18:15> - The sql subdir has various useful sql commands and a dump of the structure of the trading database. The dump was created via phpPgAdmin Export.
+
+* FINISHED - <2014-06-21 Sat 18:17>- <2014-06-21 Sat 08:31> - Create a script to create hardlinks to all the files that I want in git repo. That way the originals can stay where they are. - The files are in extras subdir along with the script that put them there, gitcommitpts.
+
+* HOWTO - <2014-05-26 Mon 14:03> - Use maven repos, but through gradle. Example working build.gradle files are in /share/pts/ptsupdater/ and /share/pts/ptscharts.
+
+* ABOUT - <2014-06-04 Wed 14:08> - Now using gradle for prject management, along with the Maven repos. Ther real problem was with the groovy "mvn groovy:shell" and "mvnDebug groovy:shell". More of a groovy problem than a maven problem 
+*** CANCELED - <2014-05-09 Fri 13:48>- <2014-05-09 Fri 10:22> - Everything is being moved out of Maven. The maintaining of the Repository, and all the possible glitches, and cruft, make it way too big a pain in the ass. For this size project, with a lone developer, my simple Netbeans setup, with libs right here, is far nicer and easier to maintain. (The last gotcha in Maven was the failure of a new Groovy:shell not working. Since I run everything through Emacs/Groovy, that was too much).
+***** NOTE - <2014-06-21 Sat 08:35> - The actual problem is executing the groovy shell from maven. That has been eliminated. see ptsprogs.el.
+
+* ABOUT - <2014-05-08 Thu 18:20> - Resource bundles - ptscharts was using jfreechart, which uses resource bundles for intl. I copied them  to /share/teamigo/jfreechart/src/resources/. There is a thing called petrasys/Bundle that was in ptscharts, but I can't seem to get it put in the right place! :ResourceBundles:
+*** FINISHED - <2014-05-09 Fri 10:07> - This was fixed via Tools/Internationalization/Internationalize... See https://netbeans.org/kb/docs/java/gui-automatic-i18n.html
+***** Step-1 - <2014-05-09 Fri 10:09> - I put the Bundle file here: /share/teamigo/ptscharts/src/petrasys/Bundle.properties. The naming seems to be important, Let the dialog box popped up complete the naming of file.
+***** Step-2 - <2014-05-09 Fri 10:13> - Accept each string selected, or make up your own.
+
+* HOWTO - <2014-05-09 Fri 16:31> - Put jar file results of building a java project into a different directory. In the nbproject/project.properties of a project, change the dist.jar entry. At http://stackoverflow.com/questions/6416445/change-destination-folder-of-jar-files-in-netbeans-7, it is suggested to change the dist.dir entry, but comment in file says that is destroyed when the project is cleaned! Disaster if that's where all your lib files are. I checked and the jar file is updated on new build.

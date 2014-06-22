@@ -1,0 +1,59 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+group = 'teamigo'
+version = '1.4-SNAPSHOT'
+
+description = """ptsutils"""
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+
+
+
+repositories {
+  mavenLocal()
+  mavenCentral()
+}
+
+dependencies {
+    compile group: 'teamigo', name: 'jfreechart', version:'1.1'
+    compile group: 'teamigo', name: 'twsapi', version:'1.0'
+    compile group: 'commons-lang', name: 'commons-lang', version:'2.6'
+    compile group: 'org.apache.commons', name: 'commons-math', version:'2.0'
+    compile group: 'postgresql', name: 'postgresql', version:'8.3-603.jdbc3'
+    testCompile group: 'junit', name: 'junit', version:'3.8.1'
+}
+
+//<2014-05-18 Sun 12:56> From http://forums.gradle.org/gradle/topics/task_to_print_artifacts_for_each_configuration
+task artifacts {
+    group = "Help"
+    description = "Displays the artifacts associated with each configuration of " + project
+    doFirst {
+        configurations.findAll().each { config ->
+            println "${config}:"
+            config.allArtifacts.getFiles().each { file -> println "  " + file}
+            println ' '
+        }
+    }
+}
+
+// <2014-05-18 Sun 11:09> http://stackoverflow.com/questions/11474729/how-to-build-sources-jar-with-gradle to thank
+// for following.
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
+}
