@@ -4,7 +4,7 @@ General notes on creating this.
 *** TODO - <2014-06-21 Sat 18:38> - Get the .gitignore setup properly. To get rid of files that have previously been committed, but aren't wanted, follow this
 1. git rm -r --cached .
 2. git add . (after .gitignore is set up)
-3. git commit -am "gitignore update"
+3. git commit -am "gitignore update" (use better msg).
 ***** from http://stackoverflow.com/questions/3919812/gitignore-and-how-to-ignore-a-common-directory-name-and-its-contents
 
 
