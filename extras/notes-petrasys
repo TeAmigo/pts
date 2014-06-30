@@ -1,12 +1,41 @@
 PeTraSys Notes
 Notes on my Trading Software
 
+* TODO - <2014-06-30 Mon 07:28> - Change the SymbolInfos to work with new db design.
+
+* TODO - <2014-06-30 Mon 09:54> - Create an "upsert" function, to update or insert into quote tables as appropriate.
+*** Created a primary key on each table that is the datetime. This is to avoid duplicate datetimes and to make lookups quicker.
+*** /share/sql/misc.sql has some code found in the installed docs that has the basic functionality.
+
+* FINISHED - <2014-06-28 Sat 10:36>- <2014-06-27 Fri 08:25> - Adjust the code so that the database lookup for drawing the charts takes less time - May want to do more later.
+*** NOTE - <2014-06-27 Fri 13:23> in /share/pts/ptsupdater/src/main/java/ptsupdater/PtsHistoricalPriceDataDownloader.java doContinuousContractDownload calls setupDownloader with the barsize set to Min1. Can change that to Hour1 to download hourly charts.
+*** CHECK - <2014-06-27 Fri 14:53> - /share/pts/ptsutils/src/main/java/ptsutils/PtsDBops.java getOHLCandVolumeCompressed is where the bottleneck is. It call the postgres func createCompressedTable which takes so long.
+***** Step-1 - <2014-06-27 Fri 15:00> - Created 2 new psql funcs, /share/sql/createCompressedTableSpecifyInTable.sql and /share/sql/compressRowsSpecifyInTable.sql. These are the same as createCompressedTable and compressrows except that a named table, as opposed to quotes1min, is used.
+***** Step-2 - <2014-06-27 Fri 15:02> - Create tables for each of the symbols and put all their 1 minute data in those tables. This way, the whole quotes1min doesn't need to be searched.
+***** Step-3 - <2014-06-27 Fri 15:16> - Created getOHLCandVolumeCompressed2() in /share/pts/ptsutils/src/main/java/ptsutils/PtsDBops.java and call it from setupChart() in PtsChart rather than the original getOHLCandVolumeCompressed().
+******* 1903.198450773 secs. chart creation when using quotes1min table. (running /share/pts/dbtests/ run gradle).
+******* 130.843306265 secs. chart creation when using individual table. So, that seems good enough.
+***** Step-4 - <2014-06-27 Fri 16:40> - Create all the individual tables from quotes1min. Should update them whenever a new PtsUpdater is run.
+
 * TODO - <2014-06-20 Fri 17:49> - Be able to redisplay the crosshairs from any trade or paper trade made. :RedisplayCrosshairs:
 *** NOTE - <2014-06-20 Fri 17:50> - There is a difference between the trade requests sent to IB and the trades made. That needs to be examined at some point.
-*** Step-1 - <2014-06-20 Fri 17:51> - Right now the paper trades info is saved in the papertrades table, but sent-trades info is not saved. That info needs to be saved in a table as well.
+*** UPDATE - <2014-06-24 Tue 16:30>- <2014-06-20 Fri 17:51> - Right now the paper trades info is saved in the papertrades table, but sent-trades info is not saved. That info needs to be saved in a table as well.  - Adding a column to paperorders table called sent, boolean, defaults to false.
 ***** created button tradesSentToIBButton in /share/pts/ptscharts/src/main/java/ptscharts/PtsTraderFrame.java
 ***** created tradesSentToIB table in trading db - same as papertrades table.
 ***** TODO - <2014-06-20 Fri 18:22> - have the Execute - trade button in the trading dialog save the info in tradesSentToIB table.
+***** TODO - <2014-06-22 Sun 11:13> - Save the projected outcome of a sent trade if things had happened according to the charts. This will be different than the actual outcome because of various forms of slippage.
+*** Step-2 - <2014-06-22 Sun 11:09> - Fetch the crosshairs info from the papertrades table.
+***** NOTE - <2014-06-22 Sun 11:17>/share/JavaDev/teamigo/ptsutils/src/main/java/ptsutils/PtsDBops.java insertIntoPaperOrdersTable(PtsOrder order) is where the info is inserted. -
+***** NOTE - <2014-06-22 Sun 11:19> - /share/pts/ptscharts/src/main/java/ptscharts/PtsTraderFrame.java paperTradeButtonActionPerformed(java.awt.event.ActionEvent evt) is where the DBops call is made.
+***** NOTE - <2014-06-22 Sun 11:22> - The values in the TraderFrame table are setup in /share/pts/ptscharts/src/main/java/ptscharts/PtsOrderTable1Row.java setOrder(PtsOrder order), which is called from /share/pts/ptscharts/src/main/java/ptscharts/PtsMouseKeyboardController.java chartMouseClicked(ChartMouseEvent event). In that function the crosshairs are set. They need to be set before setOrder() has any meaning. The setting of the crosshairs needs to be setup from the order row information taken from the db table.
+***** Step-1 - <2014-06-22 Sun 11:39> - Fetch all the paper trades or sent trades for a given symbol from the db.
+******* /share/pts/ptscharts/src/main/java/ptscharts/PtsTraderFrame.java linesToChartButtonActionPerformed() draws the horizontal lines. It uses values from the TraderTable.
+******* TODO - <2014-06-22 Sun 13:28> - Create a dialog that shows all the paper orders / sent trades orders made for a given ul. When an order is selected in that dialog, display the crosshairs for it. 
+********* CANCELED - <2014-06-22 Sun 18:58> - Can extend PtsChartChooser to do the showing of a chart with lines, as well as display the full set of hourly charts,
+********* Step-1 - <2014-06-24 Tue 15:37> - The code in /share/pts/ptscharts/src/main/java/ptscharts/PtsTraderFrame.java linesToChartButtonActionPerformed() sends  horizontal lines to chart, also need to send the vertical bar-time line to chart
+********* /share/pts/ptscharts/src/main/java/ptscharts/PtsPaperTradesList.java is simple dialog. PtsTraderFrame is more complicated, but used form builder to create it, then did away with the form, finished by hand. /share/pts/ptscharts/src/main/java/ptscharts/PtsChartChooser.java is complicated with form.
+
+* ABOUT - <2014-06-22 Sun 16:16> - The popup menu in PtsCharts is inherited from jFreechart. I've added items to it in /share/pts/ptscharts/src/main/java/ptscharts/PtsChartPanel.java extendPopupMenu extendPopupMenu() . :popupmenu:rightmouse:
 
 * ABOUT - <2014-06-04 Wed 14:19> - Root directory is now /share/pts. This is using the Gradle build tool and also putting everything in one git repo - pts.
 

@@ -41,14 +41,14 @@ ALTER FUNCTION compressrows(character varying, timestamp without time zone, time
 
 ------------------------------------------------------------------------------------------------------------
 ----////  T E S T S ////----
-select * from compressRows('AUD', '2009-12-09 03:00:00', '2009-12-09 03:05:00');
+
 
 SELECT datetime, open, high, low, close, volume FROM quotes1min
       where symbol='AUD' AND datetime >= '2009-12-09 14:00:00' AND datetime < '2009-12-09 15:00:00'
        order by datetime;
 
 
-select * from createCompressedTable('AUD', '2011-03-25 23:00:00', '2011-03-27 23:00:00', 60);
+select * from createCompressedTable('AUD', '2014-01-01 23:00:00', '2014-06-27 23:00:00', 60);
 ------------------------------------------------------------------------------------------------------------
 ----////  E N D  T E S T S ////----
 

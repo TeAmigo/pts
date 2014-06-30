@@ -4,17 +4,23 @@
 -- Description:   Misc
 -- Author:        Rick Charon <rickcharon@gmail.com>
 -- Created at:    Tue Feb 22 12:56:17 2011
--- Modified at:   Tue May  6 09:01:17 2014
+-- Modified at:   Mon Jun 23 12:05:46 2014
 ----------------------------------------------------------------------
 
 -- <2011-06-11 Sat 15:20> Copied over past data for Ags ZS and ZW from MySql, see
 
 -- /share/sql/PostgresFromMysql.sql
+INSERT INTO quotes1min_all
+
+select * from quotes1min where not exists
+       ( select * from quotes1min_all where symbol = quotes1min.symbol and datetime =quotes1min.datetime );
+
+CREATE TABLE quotes1min_recent AS SELECT * FROM quotes1min WHERE datetime >= '2014-01-01';
 
 SELECT symbol,  max(expiry) as maxexpiry, min(datetime) as minDate, max(datetime) as maxDate
-    FROM quotes1min group by symbol order by maxDate;
+    FROM quotes1min group by symbol order by maxexpiry;
 
-
+SELECT max(expiry) FROM quotes1min where symbol = 'GC';
 
 select symbol, volume, datetime from quotes1min where symbol = 'ZW' and datetime < '2009-05-05' and
 datetime > '2009-05-03';

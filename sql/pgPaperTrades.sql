@@ -1,14 +1,26 @@
 ----------------------------------------------------------------------
--- File path:     /share/pts/sql/pgPaperTrades.sql
+-- File path:     /share/sql/pgPaperTrades.sql
 -- Version:       
 -- Description:   Various ways of checking PaperTrades
 -- plsql-sql-block-indent puts it in the right place;
 -- Author:        Rick Charon <rickcharon@gmail.com>
 -- Created at:    Wed Jan 26 21:49:58 2011
--- Modified at:   Sun Jun 22 13:10:28 2014
+-- Modified at:   Sat Jun 28 13:09:34 2014
 ----------------------------------------------------------------------
+select ul, ordertype, price, translatedprice, bartime, entrytimestamp from paperorders
+       where orderid = parentid and entrytimestamp > '01-01-2014' order by bartime desc;
+
+
+select ul, ordertype, price, translatedprice, bartime, entrytimestamp from paperorders
+       where orderid = parentid order by ul, bartime;
+
 select ul, ordertype, bartime from paperorders where ul = 'CAD' and orderid = parentid order by
 bartime desc;
+
+
+
+select * from paperorders where orderid = parentid order by ul, bartime;
+
 
 
 select symbol, round(sum(outcome), 2)  from papertrades
