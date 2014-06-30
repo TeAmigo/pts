@@ -22,7 +22,7 @@ run {
   // We can pass arguments to the main() method
   // of gradle.sample.SampleApp.
   // <2014-06-04 Wed 13:51> Specify a csv file to use when updating the latest expiry.
-  // args '061914.csv'
+  // args 'eur1.csv'
 }
 repositories {
   mavenLocal()

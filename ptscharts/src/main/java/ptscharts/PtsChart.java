@@ -297,7 +297,7 @@ public class PtsChart extends JFreeChart {
     } else {
       jumpEndDateTime = jumpBeginDateTime.plusMinutes(bars * compressionFactor);
     }
-    bars = PtsDBops.getOHLCandVolumeCompressed(ohlcv, symbolInfo, jumpBeginDateTime.getMillis(),
+    bars = PtsDBops.getOHLCandVolumeCompressed2(ohlcv, symbolInfo, jumpBeginDateTime.getMillis(),
             jumpEndDateTime.getMillis(), compressionFactor);
     endDate = new Date(jumpEndDateTime.getMillis());
 //    for (ChartIndicator ind : indicators) {
@@ -399,7 +399,7 @@ public class PtsChart extends JFreeChart {
     // create subplot 1...
     //TimeSeriesCollection highsAndLows = createHighLowDataset();
     ohlcv = new PtsOHLCV();
-    PtsDBops.getOHLCandVolumeCompressed(ohlcv, symbolInfo, beginDate.getTime(), endDate.getTime(), compressionFactor);
+    PtsDBops.getOHLCandVolumeCompressed2(ohlcv, symbolInfo, beginDate.getTime(), endDate.getTime(), compressionFactor);
     //indicatorsCalculateInitial();
     priceSeriesCollection = ohlcv.ohlc;
     NumberAxis dAxis = new NumberAxis("High/Low");

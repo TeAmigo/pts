@@ -46,6 +46,7 @@ import org.jfree.ui.ExtensionFileFilter;
 import org.jfree.ui.RectangleAnchor;
 import org.jfree.ui.RectangleEdge;
 import javax.swing.ToolTipManager;
+import org.joda.time.DateTime;
 
 /**
  *
@@ -413,17 +414,26 @@ public class PtsChartPanel extends ChartPanel implements KeyListener, ChartMouse
     crosshair1 = new PtsCrosshairOverlay(this);
     addOverlay(crosshair1);
   }
+  
   public static final String REMOVEOVERLAYS_COMMAND = "REMOVEOVERLAYS";
   public static final String CROSSHAIROPS_COMMAND = "CROSSHAIROPS";
+  public static final String CHARTCHOOSER_COMMAND = "CHARTCHOOSER";
 
   public void extendPopupMenu() {
     JPopupMenu popMenu = getPopupMenu();
+   
     JMenuItem propertiesItem = new JMenuItem("Remove Overlays (Alt-e)");
     propertiesItem.setActionCommand(REMOVEOVERLAYS_COMMAND);
     propertiesItem.addActionListener(this);
     popMenu.insert(propertiesItem, 0);
+  
     propertiesItem = new JMenuItem("View and Manipulate Crosshairs...");
     propertiesItem.setActionCommand(CROSSHAIROPS_COMMAND);
+    propertiesItem.addActionListener(this);
+    popMenu.insert(propertiesItem, 0);
+   
+    propertiesItem = new JMenuItem("Popup The Chart Chooser");
+    propertiesItem.setActionCommand(CHARTCHOOSER_COMMAND);
     propertiesItem.addActionListener(this);
     popMenu.insert(propertiesItem, 0);
   }
@@ -438,6 +448,13 @@ public class PtsChartPanel extends ChartPanel implements KeyListener, ChartMouse
       crosshairsOpsFrame.setTitle(frame.getTitle());
       crosshairsOpsFrame.refreshCrosshairLists();
       crosshairsOpsFrame.setVisible(true);
+    } else if (command.equals(CHARTCHOOSER_COMMAND)) {
+      PtsChartChooser pcc = new PtsChartChooser();
+        pcc.setBeginDate(chart.getBeginDate().toString());
+        pcc.setEndDate(chart.getEndDate().toString());
+        pcc.setSelectedSymbol(chart.getSymbolInfo().getSymbol());
+        pcc.setCompressionFactor(chart.getCompressionFactor());
+        pcc.setVisible(true);
     }
   }
 

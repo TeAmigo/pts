@@ -370,14 +370,14 @@ public class PtsTraderFrame extends javax.swing.JFrame {
   }
 
   //rpc - WORKING HERE:7/26/10 1:25 PM - linesToChartButtonActionPerformed
-  private void linesToChartButtonActionPerformed(java.awt.event.ActionEvent evt) {
+   private void linesToChartButtonActionPerformed(java.awt.event.ActionEvent evt) {
     PtsChartPanel panel = chart.getChartPanel();
-    chart.getChartPanel().setupHorizontalPrefixedCrosshair((Double) (ParentTradeTable.getValueAt(0, 9)),
+      chart.getChartPanel().setupHorizontalPrefixedCrosshair((Double) (ParentTradeTable.getValueAt(0, 2)),
             ParentTradeTable.getValueAt(0, 0).toString());
-    chart.getChartPanel().setupHorizontalPrefixedCrosshair((Double) (StopLossTable.getValueAt(0, 9)),
-            StopLossTable.getValueAt(0, 0).toString() + "-STOPLOSS");
-    chart.getChartPanel().setupHorizontalPrefixedCrosshair((Double) (ProfitStopTable.getValueAt(0, 9)),
-            ProfitStopTable.getValueAt(0, 0).toString() + "-PROFIT");
+    chart.getChartPanel().setupHorizontalPrefixedCrosshair((Double) (StopLossTable.getValueAt(0, 2)),
+            StopLossTable.getValueAt(0, 0).toString());
+    chart.getChartPanel().setupHorizontalPrefixedCrosshair((Double) (ProfitStopTable.getValueAt(0, 2)),
+            ProfitStopTable.getValueAt(0, 0).toString());
 
   }
 

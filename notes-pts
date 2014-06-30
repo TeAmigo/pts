@@ -1,4 +1,7 @@
 General notes on creating this.
+* UPDATE - <2014-06-22 Sun 17:41> - I changed guotes1min so it only includes the last 6 months of data. quotes1min_all has everything. This is to see if this speeds up my startups.
+*** CHECK - <2014-06-22 Sun 18:57> - Since new data updates are going in the shrtened db, need to merge it with the big one now and then.
+*** NOTE - <2014-06-22 Sun 18:56> - It does seem to speed it up quite a bit.
 
 * HOWTO - <2014-06-21 Sat 18:35> - Push everything to the git repo using "$ gitcommitpts". :git:
 *** TODO - <2014-06-21 Sat 18:38> - Get the .gitignore setup properly. To get rid of files that have previously been committed, but aren't wanted, follow this

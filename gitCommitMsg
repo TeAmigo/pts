@@ -1,1 +1,1 @@
-<2014-06-21 Sat 18:59> Cleaning up and creating script for commit.
+* UPDATE - <2014-06-30 Mon 07:27> - Changed Postgresql DB to use individual tables for tracked futures rather than one common table. See notes-petrasys in extras directory for more details. - 

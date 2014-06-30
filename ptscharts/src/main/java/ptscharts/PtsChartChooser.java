@@ -1,10 +1,10 @@
 /*********************************************************************
- * File path:     /share/JavaDev/PeTraSys/src/petrasys/PeTraSysCharts.java
+ * File path:     /share/pts/ptscharts/src/main/java/ptscharts/PtsChartChooser.java
  * Version:       
  * Description:   
  * Author:        Rick Charon <rickcharon@gmail.com>
  * Created at:    Wed Nov 24 12:10:02 2010
- * Modified at:   Wed Nov 24 13:49:43 2010
+ * Modified at:   Tue Jun 24 14:51:15 2014
  ********************************************************************/
 
 /*
@@ -165,10 +165,12 @@ public class PtsChartChooser extends javax.swing.JFrame {
     jLabel12 = new javax.swing.JLabel();
     jLabel13 = new javax.swing.JLabel();
     exitButton = new javax.swing.JButton();
+    jCheckBox1 = new javax.swing.JCheckBox();
+    jCheckBox2 = new javax.swing.JCheckBox();
 
     jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-    setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+    setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
     setTitle("PeTraSys - Charts");
     addWindowListener(new java.awt.event.WindowAdapter() {
       public void windowClosing(java.awt.event.WindowEvent evt) {
@@ -179,11 +181,11 @@ public class PtsChartChooser extends javax.swing.JFrame {
       }
     });
 
-    jLabel1.setFont(new java.awt.Font("DejaVu Sans", 1, 14));
+    jLabel1.setFont(new java.awt.Font("DejaVu Sans", 1, 14)); // NOI18N
     java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("petrasys/Bundle"); // NOI18N
     jLabel1.setText(bundle.getString("PeTraSysTopFrame1.jLabel1.text")); // NOI18N
 
-    symbolsList.setFont(new java.awt.Font("DejaVu Sans", 1, 14));
+    symbolsList.setFont(new java.awt.Font("DejaVu Sans", 1, 14)); // NOI18N
     symbolsList.setModel(new javax.swing.AbstractListModel() {
       public int getSize() { return symbols.size(); }
       public Object getElementAt(int i) { return symbols.elementAt(i); }
@@ -196,35 +198,35 @@ public class PtsChartChooser extends javax.swing.JFrame {
     });
     jScrollPane1.setViewportView(symbolsList);
 
-    jLabel5.setFont(new java.awt.Font("DejaVu Sans", 1, 14));
+    jLabel5.setFont(new java.awt.Font("DejaVu Sans", 1, 14)); // NOI18N
     jLabel5.setText(bundle.getString("PeTraSysTopFrame1.jLabel5.text")); // NOI18N
 
-    beginDateLabel.setFont(new java.awt.Font("DejaVu Sans", 1, 16));
+    beginDateLabel.setFont(new java.awt.Font("DejaVu Sans", 1, 16)); // NOI18N
     beginDateLabel.setText(bundle.getString("PeTraSysTopFrame1.beginDateLabel.text")); // NOI18N
 
-    jLabel3.setFont(new java.awt.Font("DejaVu Sans", 1, 14));
+    jLabel3.setFont(new java.awt.Font("DejaVu Sans", 1, 14)); // NOI18N
     jLabel3.setText(bundle.getString("PeTraSysTopFrame1.jLabel3.text")); // NOI18N
 
-    endDateLabel.setFont(new java.awt.Font("DejaVu Sans", 1, 16));
+    endDateLabel.setFont(new java.awt.Font("DejaVu Sans", 1, 16)); // NOI18N
     endDateLabel.setText(bundle.getString("PeTraSysTopFrame1.endDateLabel.text")); // NOI18N
 
-    jLabel6.setFont(new java.awt.Font("DejaVu Sans", 1, 14));
+    jLabel6.setFont(new java.awt.Font("DejaVu Sans", 1, 14)); // NOI18N
     jLabel6.setText(bundle.getString("PeTraSysTopFrame1.jLabel6.text")); // NOI18N
 
     beginDateChooser.setDateFormatString("MM/dd/yyyy HH:mm:ss");
     beginDateChooser.setDoubleBuffered(false);
-    beginDateChooser.setFont(new java.awt.Font("DejaVu Sans", 0, 18));
+    beginDateChooser.setFont(new java.awt.Font("DejaVu Sans", 0, 18)); // NOI18N
     beginDateChooser.setName("beginDateChooser"); // NOI18N
     //beginDateChooser.setVisible(false);
 
-    jLabel2.setFont(new java.awt.Font("DejaVu Sans", 1, 14));
+    jLabel2.setFont(new java.awt.Font("DejaVu Sans", 1, 14)); // NOI18N
     jLabel2.setText(bundle.getString("PeTraSysTopFrame1.jLabel2.text")); // NOI18N
 
     endDateChooser.setDateFormatString("MM/dd/yyyy HH:mm:ss");
-    endDateChooser.setFont(new java.awt.Font("DejaVu Sans", 0, 18));
+    endDateChooser.setFont(new java.awt.Font("DejaVu Sans", 0, 18)); // NOI18N
     //endDateChooser.setVisible(false);
 
-    createChartButton.setFont(new java.awt.Font("DejaVu Sans", 0, 18));
+    createChartButton.setFont(new java.awt.Font("DejaVu Sans", 0, 18)); // NOI18N
     createChartButton.setText("Create Chart");
     createChartButton.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -233,16 +235,16 @@ public class PtsChartChooser extends javax.swing.JFrame {
     });
 
     priceBarsCompressionPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-    priceBarsCompressionPanel2.setFont(new java.awt.Font("DejaVu Sans", 1, 14));
+    priceBarsCompressionPanel2.setFont(new java.awt.Font("DejaVu Sans", 1, 14)); // NOI18N
 
-    priceBarCompressionText.setFont(new java.awt.Font("DejaVu Sans", 1, 14));
+    priceBarCompressionText.setFont(new java.awt.Font("DejaVu Sans", 1, 14)); // NOI18N
     priceBarCompressionText.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
     priceBarCompressionText.setText(bundle.getString("PeTraSysTopFrame1.priceBarCompressionFactor.text")); // NOI18N
 
-    jLabel12.setFont(new java.awt.Font("DejaVu Sans", 1, 14));
+    jLabel12.setFont(new java.awt.Font("DejaVu Sans", 1, 14)); // NOI18N
     jLabel12.setText(bundle.getString("PeTraSysTopFrame1.jLabel9.text")); // NOI18N
 
-    jLabel13.setFont(new java.awt.Font("DejaVu Sans", 1, 14));
+    jLabel13.setFont(new java.awt.Font("DejaVu Sans", 1, 14)); // NOI18N
     jLabel13.setText(bundle.getString("PeTraSysTopFrame1.jLabel8.text")); // NOI18N
 
     javax.swing.GroupLayout priceBarsCompressionPanel2Layout = new javax.swing.GroupLayout(priceBarsCompressionPanel2);
@@ -270,13 +272,17 @@ public class PtsChartChooser extends javax.swing.JFrame {
         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
     );
 
-    exitButton.setFont(new java.awt.Font("DejaVu Sans", 0, 18));
+    exitButton.setFont(new java.awt.Font("DejaVu Sans", 0, 18)); // NOI18N
     exitButton.setText("Exit Program");
     exitButton.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         exitButtonActionPerformed(evt);
       }
     });
+
+    jCheckBox1.setText("Show Paper Trades");
+
+    jCheckBox2.setText("Show Sent Trades");
 
     javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
     getContentPane().setLayout(layout);
@@ -285,52 +291,65 @@ public class PtsChartChooser extends javax.swing.JFrame {
       .addGroup(layout.createSequentialGroup()
         .addContainerGap()
         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+          .addComponent(jLabel1)
           .addGroup(layout.createSequentialGroup()
             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addGap(13, 13, 13)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-              .addComponent(jLabel5)
-              .addComponent(jLabel3)
-              .addComponent(beginDateLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 226, Short.MAX_VALUE)
-              .addComponent(endDateLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-          .addComponent(jLabel1))
-        .addGap(35, 35, 35)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+              .addGroup(layout.createSequentialGroup()
+                .addGap(13, 13, 13)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                  .addComponent(jLabel5)
+                  .addComponent(jLabel3)
+                  .addComponent(beginDateLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 226, Short.MAX_VALUE)
+                  .addComponent(endDateLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+              .addGroup(layout.createSequentialGroup()
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(priceBarsCompressionPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+        .addGap(41, 41, 41)
         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-          .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
-          .addComponent(beginDateChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE)
-          .addGroup(layout.createSequentialGroup()
-            .addGap(10, 10, 10)
-            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
-          .addComponent(endDateChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
-          .addComponent(priceBarsCompressionPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-          .addComponent(createChartButton))
-        .addContainerGap(35, Short.MAX_VALUE))
-      .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-        .addContainerGap(452, Short.MAX_VALUE)
-        .addComponent(exitButton)
-        .addGap(81, 81, 81))
+          .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+            .addGroup(layout.createSequentialGroup()
+              .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                  .addGap(33, 33, 33)
+                  .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createSequentialGroup()
+                  .addGap(23, 23, 23)
+                  .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)))
+              .addGap(225, 225, 225))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+              .addGroup(layout.createSequentialGroup()
+                .addComponent(endDateChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 51, Short.MAX_VALUE)
+                .addComponent(exitButton))
+              .addGroup(layout.createSequentialGroup()
+                .addComponent(beginDateChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(createChartButton))))
+          .addComponent(jCheckBox1)
+          .addComponent(jCheckBox2))
+        .addContainerGap(57, Short.MAX_VALUE))
     );
+
+    layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jCheckBox1, jCheckBox2});
+
     layout.setVerticalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(layout.createSequentialGroup()
         .addContainerGap()
         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
           .addGroup(layout.createSequentialGroup()
-            .addComponent(jLabel6)
-            .addGap(3, 3, 3)
-            .addComponent(beginDateChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addGap(10, 10, 10)
-            .addComponent(jLabel2)
-            .addGap(3, 3, 3)
+            .addGap(94, 94, 94)
             .addComponent(endDateChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addGap(18, 18, 18)
-            .addComponent(priceBarsCompressionPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addGap(18, 18, 18)
-            .addComponent(createChartButton))
+            .addComponent(jCheckBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(jCheckBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
           .addGroup(layout.createSequentialGroup()
             .addComponent(jLabel1)
             .addGap(6, 6, 6)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+              .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE)
               .addGroup(layout.createSequentialGroup()
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -338,11 +357,23 @@ public class PtsChartChooser extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(endDateLabel))
-              .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE))))
-        .addGap(28, 28, 28)
-        .addComponent(exitButton)
-        .addGap(23, 23, 23))
+                .addComponent(endDateLabel)
+                .addGap(31, 31, 31)
+                .addComponent(priceBarsCompressionPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+          .addGroup(layout.createSequentialGroup()
+            .addComponent(jLabel6)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+              .addComponent(beginDateChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+              .addComponent(createChartButton))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+              .addGroup(layout.createSequentialGroup()
+                .addGap(10, 10, 10)
+                .addComponent(jLabel2))
+              .addGroup(layout.createSequentialGroup()
+                .addGap(39, 39, 39)
+                .addComponent(exitButton)))))
+        .addContainerGap(58, Short.MAX_VALUE))
     );
 
     pack();
@@ -424,8 +455,8 @@ public class PtsChartChooser extends javax.swing.JFrame {
 
       public void run() {
         PtsChartChooser pcc = new PtsChartChooser();
-        pcc.setBeginDate("2010-11-14T03:00");
-        pcc.setEndDate("2010-12-18T07:00");
+        pcc.setBeginDate("2014-02-03T03:00");
+        pcc.setEndDate("2014-02-18T07:00");
         DateTime dt = pcc.getEndDate();
         pcc.setSelectedSymbol("CAD");
         pcc.setCompressionFactor(60);
@@ -440,6 +471,8 @@ public class PtsChartChooser extends javax.swing.JFrame {
   private com.toedter.calendar.JDateChooser endDateChooser;
   private javax.swing.JLabel endDateLabel;
   private javax.swing.JButton exitButton;
+  private javax.swing.JCheckBox jCheckBox1;
+  private javax.swing.JCheckBox jCheckBox2;
   private javax.swing.JComboBox jComboBox1;
   private javax.swing.JLabel jLabel1;
   private javax.swing.JLabel jLabel12;

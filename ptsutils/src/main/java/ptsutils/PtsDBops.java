@@ -1,10 +1,10 @@
 /*********************************************************************
- * File path:     petrasys/utils/DBops.java
+ * File path:     /share/pts/ptsutils/src/main/java/ptsutils/PtsDBops.java
  * Version:       
  * Description:   
  * Author:        Rick Charon <rickcharon@gmail.com>
  * Created at:    Tue Nov 16 09:22:38 2010
- * Modified at:   Thu Nov 18 09:06:55 2010
+ * Modified at:   Fri Jun 27 15:15:51 2014
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
@@ -364,6 +364,58 @@ public class PtsDBops {
     }
   }
 
+  /**
+   * 
+   * @param ohlcv - Open, High, Low, Close, Volume
+   * @param symInfo
+   * @param beginDT
+   * @param endDT
+   * @param compressionFactor
+   * @return
+   */
+  public static int getOHLCandVolumeCompressed2(
+          PtsOHLCV ohlcv, PtsSymbolInfo symInfo, long beginDT, long endDT, int compressionFactor) {
+    String sym = symInfo.getSymbol();
+    int priceMagnifier = (int) symInfo.getPriceMagnifier();
+    int multiplier = (int) symInfo.getMultiplier();
+    CallableStatement ret = null;
+    Timestamp beginTS = new Timestamp(beginDT);
+    Timestamp endTS = new Timestamp(endDT);
+    int resInt = 0;
+    try {
+      String callStr = "select * from createCompressedTableSpecifyInTable('" + sym + "', '" + sym + "', '" + beginTS.toString() + "', '"
+              + endTS.toString() + "', " + compressionFactor + ");";
+      ret = PtsDBops.setuptradesConnection().
+              prepareCall(callStr, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+      ResultSet res = ret.executeQuery();
+
+      while (res.next()) {
+        Timestamp ts = res.getTimestamp("datetime");
+        if (ts == null) {
+          continue;
+        }
+        Minute min = new Minute(res.getTimestamp("datetime"));
+        ohlcv.ohlc.getSeries(0).add(
+                min,
+                res.getDouble("open") / priceMagnifier * multiplier,
+                res.getDouble("high") / priceMagnifier * multiplier,
+                res.getDouble("low") / priceMagnifier * multiplier,
+                res.getDouble("close") / priceMagnifier * multiplier);
+        ohlcv.vol.getSeries(0).addOrUpdate(min, res.getLong("volume"));
+        resInt++;
+      }
+    } catch (SQLException ex) {
+      System.err.println("SQLException: " + ex.getMessage());
+    } catch (Exception ex) {
+      System.err.println("EXCEPTION: " + ex.getMessage());
+    } finally {
+      return resInt;
+    }
+  }
+
+
+  
+
   public static PreparedStatement getExpirysForUpdate(Connection con, String ul, int beginDate, int endDate) {
     PreparedStatement pstmt = null;
     try {
@@ -564,7 +616,7 @@ public class PtsDBops {
       res.next(); //To get a lastexpiry for loop, so should be one extra early expiry
       id = res.getInt(1);
     } catch (SQLException ex) {
-      System.err.println("SQLException in playItForward(): " + ex.getMessage());
+      System.err.println("SQLException in getNextPaperOrderID(): " + ex.getMessage());
     } finally {
       return (id + 1);
     }

@@ -44,8 +44,6 @@ public class PtsVerticalCrosshairLabelGenerator implements CrosshairLabelGenerat
    *
    * @param labelTemplate  the label template (<code>null</code> not
    *     permitted).
-   * @param numberFormat  the number formatter (<code>null</code> not
-   *     permitted).
    */
   public PtsVerticalCrosshairLabelGenerator(String labelTemplate,
                                          DateFormat dateFormat) {

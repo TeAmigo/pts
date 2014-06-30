@@ -37,8 +37,8 @@ import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
 
 /**
- * TableDemo is just like SimpleTableDemo, except that it
- * uses a custom TableModel.
+ * 2014-06-24 Tue 12:32 This shows a jTable with all the papertrades evaluated to date.
+ * @author rickcharon
  */
 public class PtsPaperTradesList extends JPanel {
 
