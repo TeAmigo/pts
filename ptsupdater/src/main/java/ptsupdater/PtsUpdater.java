@@ -151,7 +151,7 @@ public class PtsUpdater {
     PtsUpdater pts = new PtsUpdater(7496);
     pts.getSocket().reqCurrentTime();
     if (args.length == 0) {
-      pts.setContractInfoTable(PtsDBops.SymbolsMaxDateLastExpiryList());
+      pts.setContractInfoTable(PtsDBops.SymbolsMaxDateLastExpiryList2());
       for(SymbolMaxDateLastExpiry sym : pts.ContractInfoTable) {
         sym.lastDateToDownload = new DateTime().toCalendar(Locale.US);
       }

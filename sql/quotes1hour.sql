@@ -6,7 +6,7 @@
 -- <2014-06-28 Sat 03:29> Created the individual tables.
 -- trading=# CREATE TABLE zw AS SELECT DISTINCT * FROM quotes1min WHERE symbol='ZW';
 -- SELECT 129386
--- CREATE UNIQUE INDEX "zw_idx" ON "public"."zw" USING BTREE ("datetime");
+CREATE UNIQUE INDEX "zw_idx" ON "public"."zw" USING BTREE ("datetime");
 -- trading=# CREATE TABLE zc AS SELECT DISTINCT * FROM quotes1min WHERE symbol='ZC';
 -- SELECT 129285
 -- CREATE UNIQUE INDEX "zc_idx" ON "public"."zc" USING BTREE ("datetime");

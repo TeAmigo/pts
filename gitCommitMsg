@@ -1,1 +1,2 @@
-* UPDATE - <2014-06-30 Mon 07:27> - Changed Postgresql DB to use individual tables for tracked futures rather than one common table. See notes-petrasys in extras directory for more details. - 
+
+* UPDATE - <2014-07-05 Sat 09:59> - Create an "upsert" function, to update or insert into quote tables as appropriate. Also, created /sql/UpdaterList.sql symbolMaxDateLastExpiryList2(). (Doesn't seem to be used anywhere. Getting rid of all dependencies on quotes1min table.

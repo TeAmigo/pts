@@ -160,7 +160,7 @@ public class PtsHistoricalPriceDataDownloader implements Runnable {
       download();
       //blockOnGuard();
       if (!isCancelled) {
-        dataToDatabase();
+        dataToDatabase2();
       }
     } catch (Exception ex) {
       System.err.println("Exception in runContract: " + ex.getMessage());
@@ -276,8 +276,10 @@ public class PtsHistoricalPriceDataDownloader implements Runnable {
   public void setupQuotes1minConnection() {
     try {
       quotes1minConnection = PtsDBops.setuptradesConnection();
+      // stmtForQuotes = quotes1minConnection.prepareStatement(
+      //                                                       "INSERT INTO quotes1min VALUES (?, ? , ?, ?, ?, ?, ?, ?)");
       stmtForQuotes = quotes1minConnection.prepareStatement(
-                                                            "INSERT INTO quotes1min VALUES (?, ? , ?, ?, ?, ?, ?, ?)");
+                                                            "select upsertquoterow(?, ? , ?, ?, ?, ?, ?, ?)");
     } catch (SQLException sqlex) {
       System.err.println("SQLException: " + sqlex.getMessage());
     }
@@ -301,6 +303,31 @@ public class PtsHistoricalPriceDataDownloader implements Runnable {
         stmtForQuotes.addBatch();
       }
       int[] updateCounts = stmtForQuotes.executeBatch();
+      stmtForQuotes.close();
+      quotes1minConnection.close();
+    } catch (SQLException sqlex) {
+      System.err.println("SQLException: " + sqlex.getMessage());
+    }
+  }
+  
+  private void dataToDatabase2() {
+    setupQuotes1minConnection();
+    try {
+      int size = priceBars.size();
+      for (PtsPriceBar priceBar : priceBars) {
+        java.sql.Timestamp dateIn = new java.sql.Timestamp(priceBar.getDate());
+        //java.sql.Date dateIn = new java.sql.Date(udatein);
+        stmtForQuotes.setString(1, contract.m_symbol);
+        stmtForQuotes.setInt(2, Integer.parseInt(contract.m_expiry));
+        stmtForQuotes.setTimestamp(3, dateIn);
+        stmtForQuotes.setDouble(4, priceBar.getOpen());
+        stmtForQuotes.setDouble(5, priceBar.getHigh());
+        stmtForQuotes.setDouble(6, priceBar.getLow());
+        stmtForQuotes.setDouble(7, priceBar.getClose());
+        stmtForQuotes.setLong(8, priceBar.getVolume());
+        //stmtForQuotes.addBatch();
+        stmtForQuotes.executeQuery();
+      }
       stmtForQuotes.close();
       quotes1minConnection.close();
     } catch (SQLException sqlex) {

@@ -3,8 +3,8 @@ apply plugin: 'maven'
 apply plugin: 'groovy'
 apply plugin:'application'
 
-mainClassName = "ptscharts.HourlyCharts"
-//mainClassName = "ptscharts.PtsChartChooser"
+// mainClassName = "ptscharts.HourlyCharts"
+mainClassName = "ptscharts.PtsChartChooser"
 //mainClassName = "ptscharts.PtsPaperTradesList"
 
 

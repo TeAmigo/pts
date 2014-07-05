@@ -3,9 +3,20 @@ Notes on my Trading Software
 
 * TODO - <2014-06-30 Mon 07:28> - Change the SymbolInfos to work with new db design.
 
-* TODO - <2014-06-30 Mon 09:54> - Create an "upsert" function, to update or insert into quote tables as appropriate.
+* FINISHED - <2014-07-05 Sat 09:54>- <2014-06-30 Mon 16:48> - Make another symbolMaxDateLastExpiryList(); work with new individual tables for futures instead of monlithic quotes1min. - 
+*** Created a table "futurestables" that lists the futurestables.
+*** Created /share/sql/UpdaterList.sql symbolMaxDateLastExpiryList2().
+*** TODO - <2014-06-30 Mon 22:29> - insert it into code base.
+
+
+* FINISHED - <2014-06-30 Mon 16:47>- <2014-06-30 Mon 09:54> - Create an "upsert" function, to update or insert into quote tables as appropriate. - See function in /share/sql/upsertquoterow.sql. :upsert:
 *** Created a primary key on each table that is the datetime. This is to avoid duplicate datetimes and to make lookups quicker.
 *** /share/sql/misc.sql has some code found in the installed docs that has the basic functionality.
+*** /share/pts/ptsupdater/src/main/java/ptsupdater/PtsHistoricalPriceDataDownloader.java setupQuotes1minConnection() is where new code needs to be installed.
+*** FINISHED - <2014-07-05 Sat 09:53>- <2014-06-30 Mon 22:29> - insert it into code base. - 
+***** FINISHED - <2014-07-05 Sat 09:53>- <2014-07-03 Thu 08:58> - Fix the parameters. For some reason, plpgsql doesn't like the call workingo in it in /share/pts/dbtests/src/main/java/dbtests/UpdaterStringTest.java - 
+*** TODO - <2014-07-03 Thu 18:12> - When I used a special form, see /share/pts/dbtests/src/main/java/dbtests/UpdaterStringTest.java, the batch worked! So, try changing the code in PtsUpdater to do what the StringTest is doing!
+******* CHECK - <2014-07-03 Thu 17:49> - The problem here is batchExecute() can't be used, have to call individually for each line. So, this makes it quite a bit slower. May want to reserve that for updater calls to add new expiries, since that's when duplicates might get made.
 
 * FINISHED - <2014-06-28 Sat 10:36>- <2014-06-27 Fri 08:25> - Adjust the code so that the database lookup for drawing the charts takes less time - May want to do more later.
 *** NOTE - <2014-06-27 Fri 13:23> in /share/pts/ptsupdater/src/main/java/ptsupdater/PtsHistoricalPriceDataDownloader.java doContinuousContractDownload calls setupDownloader with the barsize set to Min1. Can change that to Hour1 to download hourly charts.
@@ -17,7 +28,7 @@ Notes on my Trading Software
 ******* 130.843306265 secs. chart creation when using individual table. So, that seems good enough.
 ***** Step-4 - <2014-06-27 Fri 16:40> - Create all the individual tables from quotes1min. Should update them whenever a new PtsUpdater is run.
 
-* TODO - <2014-06-20 Fri 17:49> - Be able to redisplay the crosshairs from any trade or paper trade made. :RedisplayCrosshairs:
+* TODO - <2014-07-05 Sat 09:55> - Be able to redisplay the crosshairs from any trade or paper trade made. :RedisplayCrosshairs:
 *** NOTE - <2014-06-20 Fri 17:50> - There is a difference between the trade requests sent to IB and the trades made. That needs to be examined at some point.
 *** UPDATE - <2014-06-24 Tue 16:30>- <2014-06-20 Fri 17:51> - Right now the paper trades info is saved in the papertrades table, but sent-trades info is not saved. That info needs to be saved in a table as well.  - Adding a column to paperorders table called sent, boolean, defaults to false.
 ***** created button tradesSentToIBButton in /share/pts/ptscharts/src/main/java/ptscharts/PtsTraderFrame.java

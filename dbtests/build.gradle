@@ -3,10 +3,8 @@ apply plugin: 'maven'
 apply plugin: 'groovy'
 apply plugin:'application'
 
-//mainClassName = "ptscharts.HourlyCharts"
-//mainClassName = "ptscharts.PtsChartChooser"
-mainClassName = "dbtests.Dbtests"
-
+// mainClassName = "dbtests.ChartFactoryTest"
+mainClassName = "dbtests.UpdaterStringTest"
 
 group = 'teamigo'
 version = '1.4-SNAPSHOT'

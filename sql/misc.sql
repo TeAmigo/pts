@@ -34,15 +34,22 @@ do language plpgsql $$
     end;
 $$;
 
--- <2014-06-30 Mon 09:52> This is from
--- file:///usr/share/doc/postgresql-doc-9.3/html/plpgsql-control-structures.html,
--- a upsert command, update or insert as appropriate, 
-CREATE FUNCTION merge_db(key INT, data TEXT) RETURNS VOID AS
+
+
+CREATE OR REPLACE FUNCTION upserttest(IN sym character varying(15), IN expire integer,
+                                        IN dt timestamp without time zone, IN open numeric,
+                                        IN high numeric, IN low numeric, IN close numeric, IN vol
+                                        bigint)
+                RETURNS VOID AS
 $$
+-- <2014-06-30 Mon 09:52> This inserts quotes into the quotes tables, checking if the datetime
+-- timestamp already exists. If it does, it updates the table, i.e., - new values are put in and old
+-- are discarded. This is because it is assumed that any new values are the most desirable, having
+-- teh correct expiry wanted for that datetime.
 BEGIN
     LOOP
         -- first try to update the key
-        UPDATE db SET b = data WHERE a = key;
+        UPDATE test SET col2 = data WHERE col1 = key;
         IF found THEN
             RETURN;
         END IF;
@@ -50,7 +57,7 @@ BEGIN
         -- if someone else inserts the same key concurrently,
         -- we could get a unique-key failure
         BEGIN
-            INSERT INTO db(a,b) VALUES (key, data);
+            INSERT INTO test(col1, col2) VALUES (key, data);
             RETURN;
         EXCEPTION WHEN unique_violation THEN
             -- Do nothing, and loop to try the UPDATE again.
@@ -60,5 +67,5 @@ END;
 $$
 LANGUAGE plpgsql;
 
-SELECT merge_db(1, 'david');
-SELECT merge_db(1, 'dennis');
+SELECT upsert('123', 'upsert!');
+SELECT upsert('789', 'new!');

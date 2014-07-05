@@ -4,7 +4,7 @@
 -- Description:   Stuff to aid in the independent download of quotes data, 
 -- Author:        Rick Charon <rickcharon@gmail.com>
 -- Created at:    Thu Jan 13 15:25:06 2011
--- Modified at:   Mon Jan 17 17:38:53 2011
+-- Modified at:   Mon Jun 30 22:32:32 2014
 ----------------------------------------------------------------------
 
 -- Gets em all!
@@ -33,7 +33,33 @@ $BODY$
 $BODY$
   LANGUAGE 'sql';
 
-select * from symbolMaxDateLastExpiryList();
+
+
+
+CREATE OR REPLACE FUNCTION symbolMaxDateLastExpiryList2()
+  RETURNS SETOF symbolMaxDateLastExpiry  AS
+$$
+DECLARE
+symtab symbolMaxDateLastExpiry%rowtype;
+nameIn = character varying(15);
+exeStr text;
+BEGIN
+        FOR nameIn IN SELECT name FROM futurestables
+        LOOP
+                exeStr = 'SELECT symbol,max(datetime) as maxDate, max(expiry) as maxExpiry
+                       FROM ' || nameIn::regclass || ' group by symbol order by symbol;';
+                raise notice '%', exeStr;
+                symtab = EXECUTE exeStr;
+                -- EXECUTE 'SELECT symbol,max(datetime) as maxDate, max(expiry) as maxExpiry
+                --        FROM ' || name::regclass || ' group by symbol order by symbol;';
+                return next symtab;
+        END LOOP;
+        RETURN;
+END;
+$$
+LANGUAGE plpgsql;
+  
+select * from symbolMaxDateLastExpiryList2();
 
 
 

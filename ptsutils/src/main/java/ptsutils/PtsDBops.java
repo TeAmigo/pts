@@ -4,7 +4,7 @@
  * Description:   
  * Author:        Rick Charon <rickcharon@gmail.com>
  * Created at:    Tue Nov 16 09:22:38 2010
- * Modified at:   Fri Jun 27 15:15:51 2014
+ * Modified at:   Fri Jul  4 16:14:00 2014
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
@@ -75,6 +75,7 @@ public class PtsDBops {
     }
   }
 
+  
   public static ArrayList<SymbolMaxDateLastExpiry> SymbolsMaxDateLastExpiryList() {
     CallableStatement callStmt = null;
     ArrayList<SymbolMaxDateLastExpiry> retList = new ArrayList<SymbolMaxDateLastExpiry>();
@@ -91,39 +92,35 @@ public class PtsDBops {
         retList.add(sme);
       }
     } catch (SQLException ex) {
-      System.err.println("SQLException  in distinctSymbolMaxDateLastExpiryList(): " + ex.getMessage());
+      System.err.println("SQLException  in SymbolMaxDateLastExpiryList(): " + ex.getMessage());
     } finally {
       return retList;
     }
   }
-
-    public static ArrayList<SymbolMaxDateLastExpiry> SymbolsExpirysBetweemDatesList(int beforeE, int afterE) {
+  
+  public static ArrayList<SymbolMaxDateLastExpiry> SymbolsMaxDateLastExpiryList2() {
     CallableStatement callStmt = null;
     ArrayList<SymbolMaxDateLastExpiry> retList = new ArrayList<SymbolMaxDateLastExpiry>();
     try {
-      callStmt = PtsDBops.setuptradesConnection().prepareCall(
-              "SELECT distinct symbol, expiry, exchange FROM futuresContractDetails where symbol in" +
-                            "(select distinct symbol FROM quotes1min) and " +
-                            "expiry >= " +  beforeE + " and expiry <= " + afterE +
-                            " order by symbol, expiry;",
+      callStmt = PtsDBops.setuptradesConnection().prepareCall("select * from symbolMaxDateLastExpiryList2();",
               ResultSet.TYPE_SCROLL_INSENSITIVE,
               ResultSet.CONCUR_READ_ONLY);
       ResultSet res = callStmt.executeQuery();
       while(res.next()) {
         SymbolMaxDateLastExpiry sme = new SymbolMaxDateLastExpiry();
         sme.symbol = res.getString("symbol");
-        sme.expiry = res.getInt("expiry");
-        sme.exchange = res.getString("exchange");
+        sme.beginDateToDownload = res.getTimestamp("maxdate");
+        sme.expiry = res.getInt("maxexpiry");
         retList.add(sme);
       }
     } catch (SQLException ex) {
-      System.err.println("SQLException  in distinctSymbolMaxDateLastExpiryList(): " + ex.getMessage());
+      System.err.println("SQLException  in SymbolMaxDateLastExpiryList2(): " + ex.getMessage());
     } finally {
       return retList;
     }
   }
 
-
+    
   public static CallableStatement distinctSymsProc() {
     CallableStatement ret = null;
     try {
@@ -229,6 +226,19 @@ public class PtsDBops {
       pstmt = PtsDBops.setuptradesConnection().prepareStatement(
               "SELECT min(datetime), max(datetime)  FROM quotes1min where symbol=?");
       pstmt.setString(1, sym);
+    } catch (SQLException ex) {
+      JOptionPane.showMessageDialog(null, ex.getMessage(), "SQLException", JOptionPane.ERROR_MESSAGE);
+    } finally {
+      return pstmt;
+    }
+  }
+
+  public static PreparedStatement minMaxDatesBySym2(String sym) {
+    PreparedStatement pstmt = null;
+    try {
+      String selStr = "SELECT min(datetime), max(datetime)  FROM " + sym + " where symbol= '" + sym + "';";
+      // System.out.println(selStr);
+      pstmt = PtsDBops.setuptradesConnection().prepareStatement(selStr);
     } catch (SQLException ex) {
       JOptionPane.showMessageDialog(null, ex.getMessage(), "SQLException", JOptionPane.ERROR_MESSAGE);
     } finally {

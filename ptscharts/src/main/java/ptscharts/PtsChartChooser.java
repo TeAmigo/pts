@@ -4,7 +4,7 @@
  * Description:   
  * Author:        Rick Charon <rickcharon@gmail.com>
  * Created at:    Wed Nov 24 12:10:02 2010
- * Modified at:   Tue Jun 24 14:51:15 2014
+ * Modified at:   Fri Jul  4 14:25:42 2014
  ********************************************************************/
 
 /*
@@ -381,7 +381,7 @@ public class PtsChartChooser extends javax.swing.JFrame {
     private void symbolsListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_symbolsListValueChanged
       String sym = (String) symbolsList.getSelectedValue();
       try {
-        ResultSet res = PtsDBops.minMaxDatesBySym(sym).executeQuery();
+        ResultSet res = PtsDBops.minMaxDatesBySym2(sym).executeQuery();
         if (res.next()) {
           Timestamp minD = res.getTimestamp(1);
           Timestamp maxD = res.getTimestamp(2);

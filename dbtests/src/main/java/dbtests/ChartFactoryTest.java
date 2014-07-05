@@ -1,8 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
+// <2014-07-02 Wed 06:40> Test getDistinctSymbolInfos() and Chart Factory creation times.
+
 package dbtests;
 
 import java.sql.PreparedStatement;
@@ -22,7 +20,7 @@ import ptsutils.PtsSymbolInfos;
  *
  * @author rickcharon
  */
-public class Dbtests {
+public class ChartFactoryTest {
 
   /**
    * @param args the command line arguments
