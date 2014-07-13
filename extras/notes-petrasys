@@ -1,7 +1,23 @@
 PeTraSys Notes
 Notes on my Trading Software
 
-* TODO - <2014-06-30 Mon 07:28> - Change the SymbolInfos to work with new db design.
+* REFERENCES - <2014-07-13 Sun 10:29> - current common filepaths
+/share/pts/ptsutils/src/main/java/ptsutils/PtsDBops.java
+/share/pts/ptsutils/src/main/java/ptsutils/PtsSymbolInfos.java
+/share/pts/ptsupdater/src/main/java/ptsupdater/PtsHistoricalPriceDataDownloader.java
+/share/pts/dbtests/src/main/java/dbtests/UpdaterStringTest.java
+/share/pts/ptscharts/src/main/java/ptscharts/PtsTraderFrame.java
+/share/pts/TAGS
+
+* TODO - <2014-07-11 Fri 19:41> - Change playitforward to not use quote1min.
+
+* TODO - <2014-07-09 Wed 11:03> - Update files, see /share/sql/updatesneeded.sql for list.
+
+* FINISHED - <2014-07-13 Sun 16:17>- <2014-06-30 Mon 07:28> - Change the SymbolInfos to work with new db design. - 
+*** UPDATE - <2014-07-12 Sat 11:44> - This requires a rewrite of activeFuturesDetails pg func, see /share/sql/pgActiveFuturesDetails.sql it is called from getDistinctSymbolInfos() in /share/pts/ptsutils/src/main/java/ptsutils/PtsSymbolInfos.java
+*** UPDATE - <2014-07-12 Sat 12:52> - added exchange row to futurestables to use it for updating contractinfos and for futuresdetails.
+*** FINISHED - <2014-07-13 Sun 16:17>- <2014-07-12 Sat 22:33> - /share/sql/updateFuturesTables.sql is working, so have function that essentially sets up the SymbolInfos, need to code it in. - 
+*** 
 
 * FINISHED - <2014-07-05 Sat 09:54>- <2014-06-30 Mon 16:48> - Make another symbolMaxDateLastExpiryList(); work with new individual tables for futures instead of monlithic quotes1min. - 
 *** Created a table "futurestables" that lists the futurestables.
@@ -41,7 +57,7 @@ Notes on my Trading Software
 ***** NOTE - <2014-06-22 Sun 11:22> - The values in the TraderFrame table are setup in /share/pts/ptscharts/src/main/java/ptscharts/PtsOrderTable1Row.java setOrder(PtsOrder order), which is called from /share/pts/ptscharts/src/main/java/ptscharts/PtsMouseKeyboardController.java chartMouseClicked(ChartMouseEvent event). In that function the crosshairs are set. They need to be set before setOrder() has any meaning. The setting of the crosshairs needs to be setup from the order row information taken from the db table.
 ***** Step-1 - <2014-06-22 Sun 11:39> - Fetch all the paper trades or sent trades for a given symbol from the db.
 ******* /share/pts/ptscharts/src/main/java/ptscharts/PtsTraderFrame.java linesToChartButtonActionPerformed() draws the horizontal lines. It uses values from the TraderTable.
-******* TODO - <2014-06-22 Sun 13:28> - Create a dialog that shows all the paper orders / sent trades orders made for a given ul. When an order is selected in that dialog, display the crosshairs for it. 
+******* TODO - <2014-07-05 Sat 12:09> - Create a dialog that shows all the paper orders / sent trades orders made for a given ul. When an order is selected in that dialog, display the crosshairs for it. 
 ********* CANCELED - <2014-06-22 Sun 18:58> - Can extend PtsChartChooser to do the showing of a chart with lines, as well as display the full set of hourly charts,
 ********* Step-1 - <2014-06-24 Tue 15:37> - The code in /share/pts/ptscharts/src/main/java/ptscharts/PtsTraderFrame.java linesToChartButtonActionPerformed() sends  horizontal lines to chart, also need to send the vertical bar-time line to chart
 ********* /share/pts/ptscharts/src/main/java/ptscharts/PtsPaperTradesList.java is simple dialog. PtsTraderFrame is more complicated, but used form builder to create it, then did away with the form, finished by hand. /share/pts/ptscharts/src/main/java/ptscharts/PtsChartChooser.java is complicated with form.
@@ -50,7 +66,8 @@ Notes on my Trading Software
 
 * ABOUT - <2014-06-04 Wed 14:19> - Root directory is now /share/pts. This is using the Gradle build tool and also putting everything in one git repo - pts.
 
-* CHECK - <2014-05-06 Tue 17:35> - Usually after successfully getting a few infos, ptscontractinfos doesn't get a connection when trying to get contract infos. This is probably because a seperate thread is spun for each contract, and they happen too fast. Probably a sleep in /share/JavaDev/teamigo/ptscontractinfos/src/main/java/ptscontractinfos/ContractInfos.java in function requestContractDetails() would do the trick. 
+* CHECK - <2014-05-06 Tue 17:35> - Usually after successfully getting a few infos, ptscontractinfos doesn't get a connection when trying to get contract infos. This is probably because a seperate thread is spun for each contract, and they happen too fast. Probably a sleep in /share/JavaDev/teamigo/ptscontractinfos/src/main/java/ptscontractinfos/ContractInfos.java in function requestContractDetails() would do the trick.
+*** UPDATE - <2014-07-12 Sat 13:44> - I put a 200 millisecond sleep in /share/pts/ptscontractinfos/src/ptscontractinfos/ContractInfos.java requestContractDetails() line 78. This seemed to do the trick. With 100 millis, still got some skips.
 
 * FINISHED - <2014-05-06 Tue 17:35>- <2014-04-03 Thu 11:25> - I haven't used any of this for quite some time, can't remeber exactly how the jump and paper trade stuff work, but my plan is to use it to get a feel for the different futures, and develop an ability to predict going forward from my familiarity with each symbol. ZW, ZC, JPY, AUD, GBP, EUR, CAD, ZB, ZN, CL, ES, GC, ZF, ZS are current symbols in DB, (see /share/sql/setupFuturesUpdates.sql for getting list). Creating hourly jump charts in /share/JavaDev/teamigo/ptscharts/ptschartsdriver.groovy. - 
 

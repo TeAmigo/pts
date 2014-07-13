@@ -9,17 +9,18 @@ import com.ib.client.Contract;
 import com.ib.client.ContractDetails;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import static java.lang.Thread.sleep;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-//import org.jfree.data.time.RegularTimePeriod;
-//import org.jfree.date.MonthConstants;
 import ptsutils.PtsDBops;
 import ptsutils.PtsIBConnectionManager;
 import ptsutils.PtsIBWrapperAdapter;
 import ptsutils.PtsMySocket;
-
+import ptsutils.ULandExchange;
 //import com.ib.client.ContractDetails;
 //import com.ib.client.EClientSocket;
 //import java.sql.Connection;
@@ -32,6 +33,7 @@ import ptsutils.PtsMySocket;
 //import petrasys.utils.DBops;
 //import petrasys.utils.IBWrapperAdapter;
 //import petrasys.utils.MsgBox;
+
 /**
  *
  * @author rickcharon
@@ -72,6 +74,11 @@ public class ContractInfos extends PtsIBWrapperAdapter implements Runnable {
 
   public void requestContractDetails() {
     PtsIBConnectionManager.setPort(7496);
+    try {
+      Thread.sleep(200);
+    } catch (InterruptedException ex) {
+      Logger.getLogger(ContractInfos.class.getName()).log(Level.SEVERE, null, ex);
+    }
     socket = PtsIBConnectionManager.connect(this);
     socket.reqContractDetails(orderID, contract);
   }
@@ -140,15 +147,8 @@ public class ContractInfos extends PtsIBWrapperAdapter implements Runnable {
   }
 
   /**
-   * 
-   * @param filePath - name of file containing ul exchange pairs
-   * Example:
-   * ES, CBOT
-   * GC, NYMEX
-   * SI, NYMEX
-   * ZS, ECBOT
-   * ZW, ECBOT
-   * ZC, ECBOT
+   *
+   * @param filePath - name of file containing ul exchange pairs Example: ES, CBOT GC, NYMEX SI, NYMEX ZS, ECBOT ZW, ECBOT ZC, ECBOT
    */
   public void createULandExchangeList(String filePath) {
     try {
@@ -176,7 +176,7 @@ public class ContractInfos extends PtsIBWrapperAdapter implements Runnable {
     }
   }
 
-  public static void main(String[] args) {
+  public static void main_before07_12_2014(String[] args) {
     if (args.length == 0) {
       new ContractInfoDialog(new javax.swing.JFrame(), true).show();
     } else if (args.length == 1) {
@@ -198,6 +198,27 @@ public class ContractInfos extends PtsIBWrapperAdapter implements Runnable {
       } catch (InterruptedException ex) {
         System.out.println("Error in ContractInfoDialog.goButtonActionPerformed():" + ex.getMessage());
       }
+    }
+  }
+
+  public static void main(String[] args) {
+
+    try {
+      ContractInfos contractInfos = new ContractInfos();
+      ArrayList<ULandExchange> uleList = PtsDBops.getUlsAndExchanges();
+      for (ULandExchange ule : uleList) {
+        Contract contract = new Contract();
+        contract.m_symbol = ule.getUl();
+        contract.m_secType = "FUT";
+        contract.m_exchange = ule.getExchange();
+        contract.m_includeExpired = true;
+        contractInfos.setParams(contract);
+        Thread ciThread = new Thread(contractInfos);
+        ciThread.start();
+        ciThread.join();
+      }
+    } catch (InterruptedException ex) {
+      System.out.println("Error in ContractInfoDialog.goButtonActionPerformed():" + ex.getMessage());
     }
   }
 }

@@ -1,32 +1,23 @@
-/*********************************************************************
- * File path:     /share/pts/ptsutils/src/main/java/ptsutils/PtsDBops.java
- * Version:       
- * Description:   
- * Author:        Rick Charon <rickcharon@gmail.com>
- * Created at:    Tue Nov 16 09:22:38 2010
- * Modified at:   Fri Jul  4 16:14:00 2014
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- ********************************************************************/
+/**
+ * *******************************************************************
+ * File path: /share/pts/ptsutils/src/main/java/ptsutils/PtsDBops.java
+ * Created at: Tue Nov 16 09:22:38 2010 Modified at: Sun Jul 13 11:25:58 2014 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *******************************************************************
+ */
 package ptsutils;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import javax.swing.JOptionPane;
 import org.jfree.data.time.Minute;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.ohlc.OHLCSeries;
+import org.joda.time.DateTime;
 //import org.jfree.data.time.RegularTimePeriod;
 //import ptscharts.PtsOHLCV;
 //import ptscharts.PtsOrder;
@@ -40,8 +31,6 @@ import org.jfree.data.time.ohlc.OHLCSeries;
 public class PtsDBops {
 
   static private Connection tradesConnection = null;
-
-  
 
   public static Connection setuptradesConnection() {
 
@@ -65,7 +54,7 @@ public class PtsDBops {
               ResultSet.TYPE_SCROLL_INSENSITIVE,
               ResultSet.CONCUR_READ_ONLY);
       ResultSet res = callStmt.executeQuery();
-      while(res.next()) {
+      while (res.next()) {
         retList.add(res.getString("symbol"));
       }
     } catch (SQLException ex) {
@@ -75,7 +64,6 @@ public class PtsDBops {
     }
   }
 
-  
   public static ArrayList<SymbolMaxDateLastExpiry> SymbolsMaxDateLastExpiryList() {
     CallableStatement callStmt = null;
     ArrayList<SymbolMaxDateLastExpiry> retList = new ArrayList<SymbolMaxDateLastExpiry>();
@@ -84,7 +72,7 @@ public class PtsDBops {
               ResultSet.TYPE_SCROLL_INSENSITIVE,
               ResultSet.CONCUR_READ_ONLY);
       ResultSet res = callStmt.executeQuery();
-      while(res.next()) {
+      while (res.next()) {
         SymbolMaxDateLastExpiry sme = new SymbolMaxDateLastExpiry();
         sme.symbol = res.getString("symbol");
         sme.beginDateToDownload = res.getTimestamp("maxdate");
@@ -97,7 +85,7 @@ public class PtsDBops {
       return retList;
     }
   }
-  
+
   public static ArrayList<SymbolMaxDateLastExpiry> SymbolsMaxDateLastExpiryList2() {
     CallableStatement callStmt = null;
     ArrayList<SymbolMaxDateLastExpiry> retList = new ArrayList<SymbolMaxDateLastExpiry>();
@@ -106,7 +94,7 @@ public class PtsDBops {
               ResultSet.TYPE_SCROLL_INSENSITIVE,
               ResultSet.CONCUR_READ_ONLY);
       ResultSet res = callStmt.executeQuery();
-      while(res.next()) {
+      while (res.next()) {
         SymbolMaxDateLastExpiry sme = new SymbolMaxDateLastExpiry();
         sme.symbol = res.getString("symbol");
         sme.beginDateToDownload = res.getTimestamp("maxdate");
@@ -120,19 +108,18 @@ public class PtsDBops {
     }
   }
 
-    
-  public static CallableStatement distinctSymsProc() {
-    CallableStatement ret = null;
-    try {
-      ret = PtsDBops.setuptradesConnection().prepareCall("select * from distinctQuoteSymbols();",
-              ResultSet.TYPE_SCROLL_INSENSITIVE,
-              ResultSet.CONCUR_READ_ONLY);
-    } catch (SQLException ex) {
-      System.err.println(ex.getMessage());
-    } finally {
-      return ret;
-    }
-  }
+  // public static CallableStatement distinctSymsProc() {
+  //   CallableStatement ret = null;
+  //   try {
+  //     ret = PtsDBops.setuptradesConnection().prepareCall("select * from distinctQuoteSymbols();",
+  //             ResultSet.TYPE_SCROLL_INSENSITIVE,
+  //             ResultSet.CONCUR_READ_ONLY);
+  //   } catch (SQLException ex) {
+  //     System.err.println(ex.getMessage());
+  //   } finally {
+  //     return ret;
+  //   }
+  // }
 
   public static CallableStatement datedRangeBySymbol(String sym, Timestamp beginDate, Timestamp endDate) {
     CallableStatement ret = null;
@@ -150,6 +137,7 @@ public class PtsDBops {
 
   /**
    * rpc - 3/7/10 10:17 AM - Get a dated range for a symbol with a specific expiry
+   *
    * @param sym
    * @param expiry
    * @param beginDate
@@ -191,8 +179,8 @@ public class PtsDBops {
   }
 
   /**
-   * rpc - 3/7/10 10:26 AM - This works because the last symbol in the quotes1min table is
-   * assumed to be the current working expiry. If it isn't, this could be a problem,
+   * rpc - 3/7/10 10:26 AM - This works because the last symbol in the quotes1min table is assumed to be the current working expiry. If it isn't, this could be a problem,
+   *
    * @param symbol the UL
    * @return a PreparedStatement that has 1 row, 1 column, with int max(expiry)
    */
@@ -217,6 +205,7 @@ public class PtsDBops {
 
   /**
    * rpc - 4/18/10 1:19 PM Get the min and max Date in DB by UL
+   *
    * @param sym - UL
    * @return The relevant PreparedStatement.
    */
@@ -236,7 +225,7 @@ public class PtsDBops {
   public static PreparedStatement minMaxDatesBySym2(String sym) {
     PreparedStatement pstmt = null;
     try {
-      String selStr = "SELECT min(datetime), max(datetime)  FROM " + sym + " where symbol= '" + sym + "';";
+      String selStr = "SELECT min(datetime), max(datetime)  FROM " + sym + ";";
       // System.out.println(selStr);
       pstmt = PtsDBops.setuptradesConnection().prepareStatement(selStr);
     } catch (SQLException ex) {
@@ -244,6 +233,38 @@ public class PtsDBops {
     } finally {
       return pstmt;
     }
+  }
+
+  // <2014-07-13 Sun 11:05> Copied from /share/pts/ptsutils/src/main/java/ptsutils/PtsSymbolInfos.java,
+  public static HashMap getDistinctSymbolInfos() {
+    HashMap symInfos = new HashMap();
+    PreparedStatement pstmt;
+    try {
+      pstmt = PtsDBops.setuptradesConnection().prepareStatement(
+                                                                "select * from updateFuturesTables();");
+      pstmt.execute();
+      pstmt = PtsDBops.setuptradesConnection().prepareStatement(
+                                                                "select * from futurestables;");
+      ResultSet res = pstmt.executeQuery();
+      while (res.next()) {
+        PtsSymbolInfo si = new PtsSymbolInfo();
+        si.symbol = res.getString("name");
+        si.exchange = res.getString("exchange");
+        si.multiplier = res.getInt("multiplier");
+        si.priceMagnifier = res.getInt("priceMagnifier");
+        si.mintick = res.getDouble("mintick");
+        si.fullName = res.getString("fullName");
+        si.minDate = new DateTime(res.getDate("mindate"));
+        si.maxDate = new DateTime(res.getDate("maxdate"));
+        si.maxActiveExpiry = res.getInt("expirylatest");
+        symInfos.put(si.symbol, si);
+      }
+      res.close();
+    } catch (SQLException ex) {
+      System.err.println("SQL Exception in getDistinctSymbolInfos:");
+      System.err.println(ex.getMessage());
+    }
+    return symInfos;
   }
 
   public static PreparedStatement activeFuturesDetails() {
@@ -302,9 +323,9 @@ public class PtsDBops {
     OHLCSeries priceSeries = ohlcv.ohlc.getSeries(0);
     TimeSeries volumeSeries = ohlcv.vol.getSeries(0);
     try {
-      PreparedStatement datedRangeBySymbol =
-              PtsDBops.datedRangeBySymbol(sym, new Timestamp(beginDT.getTime()),
-              new Timestamp(endDT.getTime()));
+      PreparedStatement datedRangeBySymbol
+              = PtsDBops.datedRangeBySymbol(sym, new Timestamp(beginDT.getTime()),
+                      new Timestamp(endDT.getTime()));
       ResultSet res = datedRangeBySymbol.executeQuery();
       while (res.next()) {
         Minute min = new Minute(res.getTimestamp("datetime"));
@@ -326,7 +347,7 @@ public class PtsDBops {
   }
 
   /**
-   * 
+   *
    * @param ohlcv - Open, High, Low, Close, Volume
    * @param symInfo
    * @param beginDT
@@ -375,7 +396,7 @@ public class PtsDBops {
   }
 
   /**
-   * 
+   *
    * @param ohlcv - Open, High, Low, Close, Volume
    * @param symInfo
    * @param beginDT
@@ -393,7 +414,7 @@ public class PtsDBops {
     Timestamp endTS = new Timestamp(endDT);
     int resInt = 0;
     try {
-      String callStr = "select * from createCompressedTableSpecifyInTable('" + sym + "', '" + sym + "', '" + beginTS.toString() + "', '"
+      String callStr = "select * from createCompressedTableSpecifyInTable('" + sym.toUpperCase() + "', '" + sym.toUpperCase() + "', '" + beginTS.toString() + "', '"
               + endTS.toString() + "', " + compressionFactor + ");";
       ret = PtsDBops.setuptradesConnection().
               prepareCall(callStr, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
@@ -423,9 +444,6 @@ public class PtsDBops {
     }
   }
 
-
-  
-
   public static PreparedStatement getExpirysForUpdate(Connection con, String ul, int beginDate, int endDate) {
     PreparedStatement pstmt = null;
     try {
@@ -450,7 +468,6 @@ public class PtsDBops {
       return pstmt;
     }
   }
-
 
   public static PreparedStatement updateBeginEndDatesForExpiry1(Connection con, String ul, int expiry,
           String beginDate, String endDate) {
@@ -483,17 +500,17 @@ public class PtsDBops {
   public static String createCompressionTable(int compressionFactor) {
     String dbTableName = "quotes" + compressionFactor + "min";
     try {
-      PreparedStatement createCompressionTable =
-              PtsDBops.setuptradesConnection().prepareStatement("CREATE TABLE IF NOT EXISTS "
-              + dbTableName
-              + " (" + "symbol VARCHAR( 15 ) NOT NULL , "
-              + "datetime DATETIME NOT NULL , "
-              + "open DOUBLE NOT NULL , "
-              + "high DOUBLE NOT NULL , "
-              + "low DOUBLE NOT NULL , "
-              + "close DOUBLE NOT NULL , "
-              + "volume BIGINT( 20 ) NOT NULL, "
-              + "PRIMARY KEY(symbol, datetime))");
+      PreparedStatement createCompressionTable
+              = PtsDBops.setuptradesConnection().prepareStatement("CREATE TABLE IF NOT EXISTS "
+                      + dbTableName
+                      + " (" + "symbol VARCHAR( 15 ) NOT NULL , "
+                      + "datetime DATETIME NOT NULL , "
+                      + "open DOUBLE NOT NULL , "
+                      + "high DOUBLE NOT NULL , "
+                      + "low DOUBLE NOT NULL , "
+                      + "close DOUBLE NOT NULL , "
+                      + "volume BIGINT( 20 ) NOT NULL, "
+                      + "PRIMARY KEY(symbol, datetime))");
       createCompressionTable.execute();
       createCompressionTable.close();
     } catch (SQLException ex) {
@@ -507,8 +524,8 @@ public class PtsDBops {
   public static PreparedStatement insertIntoCompressionTable(String table) {
     PreparedStatement pstmt = null;
     try {
-      pstmt =
-              PtsDBops.setuptradesConnection().
+      pstmt
+              = PtsDBops.setuptradesConnection().
               prepareStatement("REPLACE INTO " + table + " VALUES (?, ? , ?, ?, ?, ?, ?)");
     } catch (SQLException ex) {
       JOptionPane.showMessageDialog(null, ex.getMessage(), "SQLException", JOptionPane.ERROR_MESSAGE);
@@ -516,7 +533,6 @@ public class PtsDBops {
       return pstmt;
     }
   }
-
 
   public static void insertIntoPaperOrdersTable(PtsOrder order) {
 
@@ -526,8 +542,8 @@ public class PtsDBops {
               + "(ul, ordertype, price, translatedprice, bartime, lossorgain, "
               + "orderid, parentid, entrytimestamp)"
               + "VALUES (? , ?, ?, ?, ?, ?, ?, ? , ?)";
-      pstmt =
-              PtsDBops.setuptradesConnection().prepareStatement(pstr);
+      pstmt
+              = PtsDBops.setuptradesConnection().prepareStatement(pstr);
 // For Postgres
 //            INSERT INTO paperorders(ul, ordertype, price, translatedprice, bartime, lossorgain, 
 //                        orderid, parentid, entrytimestamp) 9 values
@@ -562,13 +578,13 @@ public class PtsDBops {
   public static void insertIntoPaperTradesTable(PtsPaperTrade paperTrade) {
     PreparedStatement pstmt = null;
     try {
-      pstmt =
-              PtsDBops.setuptradesConnection().
+      pstmt
+              = PtsDBops.setuptradesConnection().
               prepareStatement("INSERT INTO PaperTrades "
-              + "(EnteredInDB, BeginTradeDateTime, symbol, Position, "
-              + "entry, stoploss, stoprisk, stopprofit, "
-              + "profitpotential, Outcome, ExitTradeDateTime) "
-              + "VALUES (CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
+                      + "(EnteredInDB, BeginTradeDateTime, symbol, Position, "
+                      + "entry, stoploss, stoprisk, stopprofit, "
+                      + "profitpotential, Outcome, ExitTradeDateTime) "
+                      + "VALUES (CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
       //BeginTradeDateTime
       if (paperTrade.getBeginTradeDateTime() == null) {
         pstmt.setNull(1, Types.DATE);
@@ -619,8 +635,8 @@ public class PtsDBops {
   public static int getNextPaperOrderID() {
     int id = -1;
     try {
-      PreparedStatement pstmt =
-              PtsDBops.setuptradesConnection().
+      PreparedStatement pstmt
+              = PtsDBops.setuptradesConnection().
               prepareStatement("SELECT max(OrderID) FROM PaperOrders");
       ResultSet res = pstmt.executeQuery();
       res.next(); //To get a lastexpiry for loop, so should be one extra early expiry
@@ -664,8 +680,8 @@ public class PtsDBops {
       }
       String ul = pt.getSymbol();
       java.util.Date beginTradeDT = pt.getBeginTradeDateTime();
-      PreparedStatement pstmt =
-              PtsDBops.playItForwardBySymbol(ul, new Timestamp(beginTradeDT.getTime()), highPrice, lowPrice);
+      PreparedStatement pstmt
+              = PtsDBops.playItForwardBySymbol(ul, new Timestamp(beginTradeDT.getTime()), highPrice, lowPrice);
       ResultSet res = pstmt.executeQuery();
       boolean ret = res.next();
       pt.setExitTradeDateTime(res.getTimestamp("datetime"));
@@ -688,6 +704,25 @@ public class PtsDBops {
 
     } catch (SQLException ex) {
       System.err.println("SQLException in playItForward(): " + ex.getMessage());
+    }
+  }
+
+  public static ArrayList<ULandExchange> getUlsAndExchanges() {
+    ArrayList ules = new ArrayList<ULandExchange>();
+    try {
+      PreparedStatement pstmt = PtsDBops.setuptradesConnection().
+              prepareStatement("select upper(name) as name, exchange from futurestables;");
+      ResultSet res = pstmt.executeQuery();
+      while (res.next()) {
+        ULandExchange ule = new ULandExchange();
+        ule.setUl(res.getString("name"));
+        ule.setExchange(res.getString("exchange"));
+        ules.add(ule);
+      }
+    } catch (SQLException ex) {
+      System.err.println("SQLException in getUlsAndExchanges(): " + ex.getMessage());
+    } finally {
+      return ules;
     }
   }
 
@@ -743,8 +778,5 @@ public class PtsDBops {
       System.err.println("EXCEPTION: " + ex.getMessage());
     }
 
-
   }
 }
-
-

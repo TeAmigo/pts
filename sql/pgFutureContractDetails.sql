@@ -1,3 +1,7 @@
+create table futurescontractdetailsbackup as select * from futurescontractdetails;
+
+-- delete from futurescontractdetails;
+
 SELECT distinct symbol, multiplier, pricemagnifier, exchange, fullname FROM futuresContractDetails;
  -- WHERE symbol = 'ZB' limit 1;
 

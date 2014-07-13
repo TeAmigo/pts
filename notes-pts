@@ -1,6 +1,9 @@
 General notes on creating this.
+
+* CHECK - <2014-07-13 Sun 10:22> - /share/notes/notes-petrasys has a lot of notes about development.
+
 * UPDATE - <2014-06-22 Sun 17:41> - I changed guotes1min so it only includes the last 6 months of data. quotes1min_all has everything. This is to see if this speeds up my startups.
-*** CHECK - <2014-06-22 Sun 18:57> - Since new data updates are going in the shrtened db, need to merge it with the big one now and then.
+*** CANCELED - <2014-06-22 Sun 18:57> - Since new data updates are going in the shortened db, need to merge it with the big one now and then. Just use the individual symbol dbs.
 *** NOTE - <2014-06-22 Sun 18:56> - It does seem to speed it up quite a bit.
 
 * HOWTO - <2014-06-21 Sat 18:35> - Push everything to the git repo using "$ gitcommitpts". :git:

@@ -1,2 +1,4 @@
 
+* UPDATE - <2014-07-13 Sun 16:19>c - Added columns to futurestable table so it is essentially the PtsSymbolInfos. Other various fixes to make it work up to here.
+
 * UPDATE - <2014-07-05 Sat 09:59> - Create an "upsert" function, to update or insert into quote tables as appropriate. Also, created /sql/UpdaterList.sql symbolMaxDateLastExpiryList2(). (Doesn't seem to be used anywhere. Getting rid of all dependencies on quotes1min table.

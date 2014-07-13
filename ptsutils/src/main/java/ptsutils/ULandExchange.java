@@ -2,7 +2,7 @@
  * ULandExchange.java Created May 30, 2011 by rickcharon.
  *
  */
-package ptscontractinfos;
+package ptsutils;
 
 /**
  * Simple class to contain a list of underlying symbols and their corresponding exchange.

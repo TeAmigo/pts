@@ -14,8 +14,6 @@
  */
 package ptscharts;
 
-import ptsutils.PtsSymbolInfos;
-import ptsutils.PtsDBops;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -23,10 +21,13 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.BlockingQueue;
 import javax.swing.JList;
 import org.joda.time.DateTime;
+import ptsutils.PtsDBops;
+import ptsutils.PtsSymbolInfos;
 //import petrasys.utils.Classes;
 //import petrasys.utils.DBops;
 //import petrasys.utils.DateOps;
@@ -45,17 +46,17 @@ public class PtsChartChooser extends javax.swing.JFrame {
   SimpleDateFormat dateStrFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
   private List<Class> indicatorsList;
 
-  private class symbolInfo {
-
-    String symbol;
-    String exchange;
-    int multiplier;
-    int priceMagnifier;
-    double minTick;
-    String fullName;
-  };
-  //HashMap symbolInfos;
-  symbolInfo workingSI;
+//  private class symbolInfo {
+//
+//    String symbol;
+//    String exchange;
+//    int multiplier;
+//    int priceMagnifier;
+//    double minTick;
+//    String fullName;
+//  };
+//  //HashMap symbolInfos;
+//  symbolInfo workingSI;
   private Vector<String> symbols;
   PtsSymbolInfos syminfs;
   PtsChartFactory factory;
@@ -88,24 +89,10 @@ public class PtsChartChooser extends javax.swing.JFrame {
   }
 
   public void getDistinctSymbolNames() {
-    //return symbols;   Vector<String>
-    try {
-      ResultSet res = PtsDBops.distinctSymsProc().executeQuery();
-      int rowSize = res.getRow();
-      res.last();
-      rowSize = res.getRow();
-      res.first();
-      rowSize = res.getRow();
-      res.previous();
-      rowSize = res.getRow();
-      symbols.clear();
-      while (res.next()) {
-        symbols.add(res.getString("symbol"));
-      }
-      res.close();
-    } catch (SQLException sqlex) {
-      System.err.println("SQLException: " + sqlex.getMessage());
-    }
+    Set syms = syminfs.getSymInfos().keySet();
+    syms.stream().forEach((s) -> {
+      symbols.add(s.toString());
+    });
   }
 
   public DateTime getBeginDate() {

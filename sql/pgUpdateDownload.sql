@@ -4,7 +4,7 @@
 -- Description:   Stuff to aid in the independent download of quotes data, 
 -- Author:        Rick Charon <rickcharon@gmail.com>
 -- Created at:    Thu Jan 13 15:25:06 2011
--- Modified at:   Mon Jun 30 22:32:32 2014
+-- Modified at:   Sat Jul 12 16:18:29 2014
 ----------------------------------------------------------------------
 
 -- Gets em all!
@@ -48,7 +48,7 @@ BEGIN
         LOOP
                 exeStr = 'SELECT symbol,max(datetime) as maxDate, max(expiry) as maxExpiry
                        FROM ' || nameIn::regclass || ' group by symbol order by symbol;';
-                raise notice '%', exeStr;
+                -- raise notice '%', exeStr;
                 symtab = EXECUTE exeStr;
                 -- EXECUTE 'SELECT symbol,max(datetime) as maxDate, max(expiry) as maxExpiry
                 --        FROM ' || name::regclass || ' group by symbol order by symbol;';
@@ -58,8 +58,10 @@ BEGIN
 END;
 $$
 LANGUAGE plpgsql;
-  
-select * from symbolMaxDateLastExpiryList2();
+
+
+
+-- select * from symbolMaxDateLastExpiryList2();
 
 
 
@@ -85,3 +87,8 @@ select distinct symbol, exchange from futurescontractdetails;
 
 
 select max(datetime) from quotes1min where symbol = 'ZB';
+
+SELECT distinct  symbol, exchange, multiplier,
+                         priceMagnifier, mintick,
+                         fullName FROM futuresContractDetails;
+                         
